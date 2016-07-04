@@ -1,0 +1,97 @@
+package application.model;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+
+import javafx.scene.Parent;
+import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
+import application.model.Card.Unit;
+import application.view.MainGameViewController;
+
+
+public class Deck extends Parent{
+	
+public ArrayList<Card> cards = new ArrayList<Card>();
+	
+	public Deck(){
+
+		/*Rectangle bg = new Rectangle(80,100);
+		bg.setArcWidth(20);
+		bg.setArcHeight(20);
+		bg.setFill(Color.WHITE);
+		
+		Text text = new Text(toString());
+		text.setFont(new Font(10.0));
+		text.setWrappingWidth(70);
+		
+		getChildren().add(new StackPane(bg, text));*/
+	}
+
+	public final void refill() {
+		cards.clear();
+		for(Unit unit : Unit.values()){
+			for(int i=0; i<unit.quantity; i++){
+				cards.add(new Card(unit));
+			}
+		}
+	}
+	
+	public final void shuffle() {
+		for (Card card : MainGameViewController.discardDeck.cards) {
+			MainGameViewController.drawDeck.cards.add(card);
+		}
+		MainGameViewController.discardDeck.cards.clear();
+		/*for(Unit unit : Unit.values()){
+			for(int i=0; i<unit.quantity; i++){
+				cards.add(new Card(unit));
+			}
+		}
+		//remove held cards
+		for (Card card : MainGameViewController.discardDeck.cards) {
+			int index = 0;
+			for (Card matchingCard : cards) {
+				if(card.unit.equals(matchingCard.unit)){
+					cards.remove(cards.indexOf(matchingCard));
+				}
+			}
+		}*/
+	}
+	
+	public Card drawCard(){
+		if(getDeckSize() == 0){
+			shuffle();
+		}
+		Card card = null;
+		while(card == null){
+			int index = (int)(Math.random()*cards.size());
+			card = cards.get(index);
+			cards.remove(index);
+		}
+		return card;
+	}
+	
+	public void addDiscardedCards(Card card){
+		cards.add(card);
+	}
+	
+	public ArrayList<Card> getAllCards(){
+		return cards;
+	}
+	
+	public void clearDeck(){
+		cards.clear();
+	}
+	
+	public int getDeckSize(){
+		return cards.size();
+	}
+	
+	public String toString(){
+		return "# of Cards Left:\n\n" + cards.size();
+	}
+
+}
