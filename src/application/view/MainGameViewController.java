@@ -1,15 +1,20 @@
 package application.view;
 
 import java.util.ArrayList;
+
+import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
@@ -29,6 +34,10 @@ public class MainGameViewController {
 	public static Deck drawDeck = new Deck();
 	public static Deck discardDeck = new Deck();
 	
+	@FXML
+	public TilePane aiCardDisplay = new TilePane();
+	@FXML
+	public TilePane playerCardDisplay = new TilePane();
 	@FXML
 	public VBox playerScoreArea;
 	@FXML
@@ -51,6 +60,8 @@ public class MainGameViewController {
 	public Button nextRoundButton;
 	@FXML
 	public Button drawButton;
+	@FXML
+	public Button playEventButton;
 	@FXML
 	public Label message = new Label("");
 	@FXML
@@ -97,10 +108,12 @@ public class MainGameViewController {
 	private SimpleBooleanProperty canDraw = new SimpleBooleanProperty(true);
 	private SimpleBooleanProperty needNextRound = new SimpleBooleanProperty(false);
 	private SimpleBooleanProperty canEndTurn = new SimpleBooleanProperty(false);
+	private SimpleBooleanProperty eventCardPlayed = new SimpleBooleanProperty(false);
+	private SimpleBooleanProperty hasEventCard = new SimpleBooleanProperty(false);
 
 	public MainGameViewController(){
-		aiHand = new Hand(aiCardArea.getChildren());
-        playerHand = new Hand(playerCardArea.getChildren());
+		aiHand = new Hand(aiCardDisplay.getChildren());
+        playerHand = new Hand(playerCardDisplay.getChildren());
 	}
 	
 	public void setMainGame(CastlesMain main) {
@@ -114,11 +127,15 @@ public class MainGameViewController {
         newGameButton.disableProperty().bind(isGameOver.not());
         drawButton.disableProperty().bind(canDraw.not());
         nextRoundButton.disableProperty().bind(needNextRound.not());
+        //playEventButton.disableProperty().bind(hasEventCard.not());
+        BooleanBinding eventBinding = hasEventCard.not().or(eventCardPlayed);
+        playEventButton.disableProperty().bind(eventBinding);
 	}
 	
 	@FXML
 	public void handleEndTurn(){
 		canEndTurn.set(false);
+		eventCardPlayed.set(false);
 		if(isPlayerTurn.get() == true){
 			if(playerHand.handSizeProperty().get() > 7){
 				handleAttack();
@@ -178,11 +195,19 @@ public class MainGameViewController {
 	public void handleAttack(){
 		canEndTurn.set(false);
 		canAttack.set(false);
+		eventCardPlayed.set(false);
+		hasEventCard.set(false);
 		playerHandList = playerHand.getHandList();
 		aiHandList = aiHand.getHandList();
+		for (Card card : playerHandList) {
+			card.selectable = false;
+			card.isCardSelected = false;
+		}
 		discardHands(playerHandList);
 		discardHands(aiHandList);
 		if(isPlayerTurn.get()){
+			playerHand.highlightAttackers();
+			aiHand.highlightDefenders();
 			attackerPower = playerHand.attackValueProperty().get() + numPlayerChampions*2;
 			defenderPower = aiHand.defenseValueProperty().get() + numAIChampions*2;
 			if(attackerPower > defenderPower){
@@ -208,6 +233,8 @@ public class MainGameViewController {
 			}
 		}
 		else{
+			aiHand.highlightAttackers();
+			playerHand.highlightDefenders();
 			attackerPower = aiHand.attackValueProperty().get() + numAIChampions*2;
 			defenderPower = playerHand.defenseValueProperty().get() + numPlayerChampions*2;
 			if(attackerPower > defenderPower){
@@ -240,20 +267,23 @@ public class MainGameViewController {
 		canDraw.set(true);
 		maxAttack.set(false);
 		needNextRound.set(false);
+		hasEventCard.set(false);
+		canAttack.set(false);
+		eventCardPlayed.set(false);
 		roundWinner = "";
 		discardDeck.clearDeck();
 		drawDeck.refill();
 		playerHand.reset();
 		aiHand.reset();
-		aiHand = new Hand(aiCardArea.getChildren());
-        playerHand = new Hand(playerCardArea.getChildren());
+		aiHand = new Hand(aiCardDisplay.getChildren());
+        playerHand = new Hand(playerCardDisplay.getChildren());
 		resetScoreArea();
 		numAIChampions = 0;
 		numPlayerChampions = 0;
-		playerHand.takeCard(drawDeck.drawCard());
-		playerHand.takeCard(drawDeck.drawCard());
-		aiHand.takeCard(drawDeck.drawCard());
-		aiHand.takeCard(drawDeck.drawCard());
+		playerHand.takeCard(drawDeck.drawCard(true));
+		playerHand.takeCard(drawDeck.drawCard(true));
+		aiHand.takeCard(drawDeck.drawCard(false));
+		aiHand.takeCard(drawDeck.drawCard(false));
 		setDeckText();
 		isGameOver.set(false);
 		setDeckText();
@@ -262,15 +292,91 @@ public class MainGameViewController {
 	
 	public void handleDraw(){
 		if(isPlayerTurn.get()){
-			playerHand.takeCard(drawDeck.drawCard());
-			canEndTurn.set(true);
+			playerHand.takeCard(drawDeck.drawCard(true));
+			if (!checkForEvent() || eventCardPlayed.get()) {
+				canEndTurn.set(true);
+			}
+			else{
+				message.setText("You have at least one event and must play one this turn.");
+				hasEventCard.set(true);
+			}
 			canDraw.set(false);
 			if(playerHand.numAttackersProperty().get() > 3){
-				canAttack.set(true);
+				if (!checkForEvent() || eventCardPlayed.get()) {
+					canAttack.set(true);
+				}
+				else{
+					message.setText("You have at least one event and must play one this turn.");
+				}
 			}
 		}
 		else{
-			aiHand.takeCard(drawDeck.drawCard());
+			aiHand.takeCard(drawDeck.drawCard(false));
+		}
+	}
+	
+	@FXML
+	public void handlePlayEvent(){
+		if (playEventButton.getText().equals("PLAY EVENT")) {
+			ArrayList<Card> tempHandList = new ArrayList<Card>();
+			if (isPlayerTurn.get()) {
+				tempHandList = playerHand.getHandList();
+			} else {
+				tempHandList = aiHand.getHandList();
+			}
+			for (Card card : tempHandList) {
+				if (card.isCardSelected && card.type.equals("event")) {
+					card.highlightCardOnClick(true);
+					//need the actual actions coded... this is just messages
+					if (card.resultCode.equals("dis1")) {
+						message.setText("Random card discarded.");
+					} else if (card.resultCode.equals("bothdis1")) {
+						message.setText("Random card discarded for each player.");
+					} else if (card.resultCode.equals("draw2")) {
+						discardCard(card);
+						if(isPlayerTurn.get()){
+							playerHand.takeCard(drawDeck.drawCard(true));
+							playerHand.takeCard(drawDeck.drawCard(true));
+						}
+						else{
+							aiHand.takeCard(drawDeck.drawCard(false));
+							aiHand.takeCard(drawDeck.drawCard(false));
+						}
+						message.setText("Two new cards drawn.");
+					} else if (card.resultCode.equals("newC")) {
+						message.setText("Select a card to discard then a new card will be drawn for you.");
+						playEventButton.setText("Trade");
+					} else if (card.resultCode.equals("newH")) {
+						message.setText("Hand discarded and new hand drawn.");
+					} else if (card.resultCode.equals("trade1")) {
+						message.setText("One card traded with opponent at random.");
+					} else if (card.resultCode.equals("oppdis1")) {
+						message.setText("Opponent discarded a random card.");
+					}
+					eventCardPlayed.set(true);
+					canEndTurn.set(true);
+					if((isPlayerTurn.get() && playerHand.numAttackersProperty().get() > 3) ||
+							(!isPlayerTurn.get() && aiHand.numAttackersProperty().get() > 3)){
+						canAttack.set(true);
+					}
+				}
+			}
+		}
+		else{
+			ArrayList<Card> tempHandList = new ArrayList<Card>();
+			if (isPlayerTurn.get()) {
+				tempHandList = playerHand.getHandList();
+			} else {
+				tempHandList = aiHand.getHandList();
+			}
+			for (Card card : tempHandList) {
+				if (card.isCardSelected) {
+					card.highlightCardOnClick(true);
+					//discard card & draw card
+				}
+			}
+			eventCardPlayed.set(true);
+			playEventButton.setText("Play Event");
 		}
 	}
 	
@@ -281,12 +387,12 @@ public class MainGameViewController {
 		aiHand.reset();
 		playerHandList.clear();
 		aiHandList.clear();
-		aiHand = new Hand(aiCardArea.getChildren());
-        playerHand = new Hand(playerCardArea.getChildren());
-        playerHand.takeCard(drawDeck.drawCard());
-		playerHand.takeCard(drawDeck.drawCard());
-		aiHand.takeCard(drawDeck.drawCard());
-		aiHand.takeCard(drawDeck.drawCard());
+		aiHand = new Hand(aiCardDisplay.getChildren());
+        playerHand = new Hand(playerCardDisplay.getChildren());
+        playerHand.takeCard(drawDeck.drawCard(true));
+		playerHand.takeCard(drawDeck.drawCard(true));
+		aiHand.takeCard(drawDeck.drawCard(false));
+		aiHand.takeCard(drawDeck.drawCard(false));
 		attackerPower = 0;
 		defenderPower = 0;
 		
@@ -295,6 +401,7 @@ public class MainGameViewController {
 			canDraw.set(true);
 			setDeckText();
 			roundWinner = "";
+			message.setText("PLAYER'S TURN\nDRAW A CARD");
 		}
 		else{
 			isPlayerTurn.set(false);
@@ -321,12 +428,12 @@ public class MainGameViewController {
 		maxAttack.set(false);
 		playerHand.reset();
 		aiHand.reset();
-		aiHand = new Hand(aiCardArea.getChildren());
-        playerHand = new Hand(playerCardArea.getChildren());
-        playerHand.takeCard(drawDeck.drawCard());
-		playerHand.takeCard(drawDeck.drawCard());
-		aiHand.takeCard(drawDeck.drawCard());
-		aiHand.takeCard(drawDeck.drawCard());
+		aiHand = new Hand(aiCardDisplay.getChildren());
+        playerHand = new Hand(playerCardDisplay.getChildren());
+        playerHand.takeCard(drawDeck.drawCard(true));
+		playerHand.takeCard(drawDeck.drawCard(true));
+		aiHand.takeCard(drawDeck.drawCard(false));
+		aiHand.takeCard(drawDeck.drawCard(false));
 		if(winner.equals("player")){
 			isPlayerTurn.set(true);
 			canDraw.set(true);
@@ -346,6 +453,22 @@ public class MainGameViewController {
 			defenderPower = 0;
 			handleEndTurn();
 		}
+	}
+	
+	public boolean checkForEvent(){
+		ArrayList<Card> tempHandList = new ArrayList<Card>();
+		if(isPlayerTurn.get()){
+			tempHandList = playerHand.getHandList();
+		}
+		else{
+			tempHandList = aiHand.getHandList();
+		}
+		for (Card card : tempHandList) {
+			if(card.type.equals("event")){
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	public void removeCastle(String who){
@@ -419,6 +542,16 @@ public class MainGameViewController {
 		else{
 			message.setText("Sorry, the computer won this game.\nTry again.");
 		}
+	}
+	
+	public void discardCard(Card card){
+		if(isPlayerTurn.get()){
+			playerHand.removeCard(card);
+		}
+		else{
+			aiHand.removeCard(card);
+		}
+		discardDeck.addDiscardedCards(card);
 	}
 	
 	public void discardHands(ArrayList<Card> handList){

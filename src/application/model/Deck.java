@@ -9,6 +9,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import application.model.Card.Event;
 import application.model.Card.Unit;
 import application.view.MainGameViewController;
 
@@ -38,30 +39,21 @@ public ArrayList<Card> cards = new ArrayList<Card>();
 				cards.add(new Card(unit));
 			}
 		}
+		for(Event event : Event.values()){
+			cards.add(new Card(event));
+		}
 	}
 	
 	public final void shuffle() {
 		for (Card card : MainGameViewController.discardDeck.cards) {
+			card.selectable = false;
+			card.isCardSelected = false;
 			MainGameViewController.drawDeck.cards.add(card);
 		}
 		MainGameViewController.discardDeck.cards.clear();
-		/*for(Unit unit : Unit.values()){
-			for(int i=0; i<unit.quantity; i++){
-				cards.add(new Card(unit));
-			}
-		}
-		//remove held cards
-		for (Card card : MainGameViewController.discardDeck.cards) {
-			int index = 0;
-			for (Card matchingCard : cards) {
-				if(card.unit.equals(matchingCard.unit)){
-					cards.remove(cards.indexOf(matchingCard));
-				}
-			}
-		}*/
 	}
 	
-	public Card drawCard(){
+	public Card drawCard(boolean selectable){
 		if(getDeckSize() == 0){
 			shuffle();
 		}
@@ -70,6 +62,9 @@ public ArrayList<Card> cards = new ArrayList<Card>();
 			int index = (int)(Math.random()*cards.size());
 			card = cards.get(index);
 			cards.remove(index);
+		}
+		if(selectable){
+			card.selectable = true;
 		}
 		return card;
 	}

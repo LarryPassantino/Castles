@@ -31,12 +31,34 @@ public class Hand {
 		}
 	}
 	
+	public void removeCard(Card card){
+		hand.remove(card);
+	}
+	
 	public ArrayList getHandList(){
 		ArrayList<Card> handList = new ArrayList<Card>();
 		for (Node node : hand) {
 			handList.add((Card)node);
 		}
 		return handList;
+	}
+	
+	public void highlightAttackers(){
+		for (Node card : hand) {
+			Card thisCard = (Card) card;
+			if(thisCard.attack > 0){
+				thisCard.highlightCard(true);;
+			}
+		}
+	}
+	
+	public void highlightDefenders(){
+		for (Node card : hand) {
+			Card thisCard = (Card) card;
+			if(thisCard.defense > 0){
+				thisCard.highlightCard(true);;
+			}
+		}
 	}
 	
 	public void reset(){
