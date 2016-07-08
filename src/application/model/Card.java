@@ -5,7 +5,12 @@ import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.control.Control;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.BackgroundImage;
+import javafx.scene.layout.BackgroundPosition;
+import javafx.scene.layout.BackgroundRepeat;
+import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
@@ -23,6 +28,8 @@ public class Card extends Pane{
 	public final static String NEW_HAND = "discard hand \nand draw new \nhand of same \nsize(not \nincluding this \ncard)";
 	public final static String OPPONENT_DISCARD_ONE = "one opponent \ndiscards one \nrandom card";
 	public final static String TRADE_ONE = "trade one \nrandom card \nwith opponent";
+	//public static final BackgroundImage cardBack = 
+			//new BackgroundImage(new Image("cardbacks.png"), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT);
 
 	enum Unit{
 		SPEARMEN(0,1,10), SHIELD_FOOTMEN(1,0,10), ARCHERS(3,3,20),
@@ -66,6 +73,8 @@ public class Card extends Pane{
 	public final String type;
 	public boolean selectable = false;
 	public boolean isCardSelected = false;
+	public boolean showBack = false;
+	public Label cardLabel;
 	
 	public Card(Unit unit) {
 		this.unit = unit;
@@ -83,13 +92,19 @@ public class Card extends Pane{
 		this.setHeight(200);
 		this.setWidth(160);
 		//this.setPadding(new Insets(20,10,20,10));
+		if(showBack){
+			
+		}
+		else{
+			
+		}
 		this.setStyle("-fx-background-color: #ffffff");
 		
 		Text text = new Text(toString());
 		text.setFont(new Font(13.0));
 		text.setWrappingWidth(75);
 		
-		Label cardLabel = new Label(toString());
+		cardLabel = new Label(toString());
 		cardLabel.setFont(new Font(12.0));
 		cardLabel.setPadding(new Insets(10,10,10,10));
 		
@@ -147,11 +162,25 @@ public class Card extends Pane{
 		return this;
 	}
 	
+	public void displayFront(){
+		this.cardLabel.setVisible(true);
+		this.setStyle("-fx-background-color: #ffffff");
+		this.getChildren().add(cardLabel);
+		
+	}
+	
+	public void displayBack(){
+		this.cardLabel.setVisible(false);
+		this.setStyle("-fx-background-image: url(cardbacks.jpg);"+"-fx-border-color: #ffffff;"+"-fx-border-width: 2;");
+	}
+	
 	public void highlightCard(boolean doHighlight){
 		if(doHighlight){
+			this.cardLabel.setVisible(true);
 			this.setStyle("-fx-background-color: #ffffff;"+"-fx-border-color: #ffc266;"+"-fx-border-width: 5;");
 		}
 		else{
+			this.cardLabel.setVisible(true);
 			this.setStyle("-fx-background-color: #ffffff");
 		}
 	}

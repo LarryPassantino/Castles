@@ -328,11 +328,17 @@ public class MainGameViewController {
 				if (card.isCardSelected && card.type.equals("event")) {
 					card.highlightCardOnClick(true);
 					//need the actual actions coded... this is just messages
+					
+					//discard 1
 					if (card.resultCode.equals("dis1")) {
 						message.setText("Random card discarded.");
-					} else if (card.resultCode.equals("bothdis1")) {
+					} 
+					//each discard 1
+					else if (card.resultCode.equals("bothdis1")) {
 						message.setText("Random card discarded for each player.");
-					} else if (card.resultCode.equals("draw2")) {
+					}
+					//draw 2
+					else if (card.resultCode.equals("draw2")) {
 						discardCard(card);
 						if(isPlayerTurn.get()){
 							playerHand.takeCard(drawDeck.drawCard(true));
@@ -343,14 +349,22 @@ public class MainGameViewController {
 							aiHand.takeCard(drawDeck.drawCard(false));
 						}
 						message.setText("Two new cards drawn.");
-					} else if (card.resultCode.equals("newC")) {
+					} 
+					//get new card
+					else if (card.resultCode.equals("newC")) {
 						message.setText("Select a card to discard then a new card will be drawn for you.");
 						playEventButton.setText("Trade");
-					} else if (card.resultCode.equals("newH")) {
+					} 
+					//get new hand
+					else if (card.resultCode.equals("newH")) {
 						message.setText("Hand discarded and new hand drawn.");
-					} else if (card.resultCode.equals("trade1")) {
+					}
+					//trade 1 with opponent
+					else if (card.resultCode.equals("trade1")) {
 						message.setText("One card traded with opponent at random.");
-					} else if (card.resultCode.equals("oppdis1")) {
+					} 
+					//opponent discard 1
+					else if (card.resultCode.equals("oppdis1")) {
 						message.setText("Opponent discarded a random card.");
 					}
 					eventCardPlayed.set(true);

@@ -33,6 +33,7 @@ public class Hand {
 	
 	public void removeCard(Card card){
 		hand.remove(card);
+		handSize.set(handSize.get()-1);
 	}
 	
 	public ArrayList getHandList(){

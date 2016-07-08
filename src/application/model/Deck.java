@@ -66,6 +66,9 @@ public ArrayList<Card> cards = new ArrayList<Card>();
 		if(selectable){
 			card.selectable = true;
 		}
+		else{
+			card.displayBack();
+		}
 		return card;
 	}
 	
