@@ -170,14 +170,16 @@ public class Card extends Pane{
 	}
 	
 	public void displayBack(){
-		this.cardLabel.setVisible(false);
-		this.setStyle("-fx-background-image: url(cardbacks.jpg);"+"-fx-border-color: #ffffff;"+"-fx-border-width: 2;");
+		//this.cardLabel.setVisible(false);
+		//cardLabel.setOpacity(0.0);
+		setStyle("-fx-background-image: url(cardbacks.jpg);"+"-fx-border-color: #ffffff;"+"-fx-border-width: 2;");
 	}
 	
 	public void highlightCard(boolean doHighlight){
 		if(doHighlight){
-			this.cardLabel.setVisible(true);
-			this.setStyle("-fx-background-color: #ffffff;"+"-fx-border-color: #ffc266;"+"-fx-border-width: 5;");
+			cardLabel.setVisible(true);
+			cardLabel.setOpacity(100.0);
+			setStyle("-fx-background-color: #ffffff;"+"-fx-border-color: #ffc266;"+"-fx-border-width: 5;");
 		}
 		else{
 			this.cardLabel.setVisible(true);
