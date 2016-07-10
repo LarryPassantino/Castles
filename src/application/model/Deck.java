@@ -48,6 +48,7 @@ public ArrayList<Card> cards = new ArrayList<Card>();
 		for (Card card : MainGameViewController.discardDeck.cards) {
 			card.selectable = false;
 			card.isCardSelected = false;
+			card.displayFront();
 			MainGameViewController.drawDeck.cards.add(card);
 		}
 		MainGameViewController.discardDeck.cards.clear();

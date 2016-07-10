@@ -48,10 +48,10 @@ public class Card extends Pane{
 	};
 	
 	enum Event{
-		/*FIRE(DISCARD_ONE,"dis1"), STORM(DISCARD_ONE,"dis1"), SPY(DISCARD_ONE,"dis1"), TIRED_ARMY(DISCARD_ONE,"dis1"),
-		EARTHQUAKE(EACH_DISCARD_ONE,"bothdis1"),*/
-		LUCK(DRAW_TWO,"draw2"), GIFT(DRAW_TWO,"draw2"), BLESSING(DRAW_TWO,"draw2"), FORTUNE(DRAW_TWO,"draw2")/*,
-		DARING(NEW_CARD,"newC"), FAVOR(NEW_CARD,"newC"), TACTICS(NEW_CARD,"newC"), OPPORTUNITY(NEW_CARD,"newC"),
+		FIRE(DISCARD_ONE,"dis1"), STORM(DISCARD_ONE,"dis1"), SPY(DISCARD_ONE,"dis1"), TIRED_ARMY(DISCARD_ONE,"dis1"),
+		EARTHQUAKE(EACH_DISCARD_ONE,"bothdis1"),
+		LUCK(DRAW_TWO,"draw2"), GIFT(DRAW_TWO,"draw2"), BLESSING(DRAW_TWO,"draw2"), FORTUNE(DRAW_TWO,"draw2"),
+		DARING(NEW_CARD,"newC"), FAVOR(NEW_CARD,"newC"), TACTICS(NEW_CARD,"newC"), OPPORTUNITY(NEW_CARD,"newC")/*,
 		CLEAN_SLATE(NEW_HAND,"newH"),
 		TREATY(TRADE_ONE,"trade1"),
 		ILLUSIONIST(OPPONENT_DISCARD_ONE,"oppdis1"), TRICKSTER(OPPONENT_DISCARD_ONE,"oppdis1"),
@@ -99,10 +99,6 @@ public class Card extends Pane{
 			
 		}
 		this.setStyle("-fx-background-color: #ffffff");
-		
-		Text text = new Text(toString());
-		text.setFont(new Font(13.0));
-		text.setWrappingWidth(75);
 		
 		cardLabel = new Label(toString());
 		cardLabel.setFont(new Font(12.0));
@@ -163,9 +159,9 @@ public class Card extends Pane{
 	}
 	
 	public void displayFront(){
-		this.cardLabel.setVisible(true);
+		//this.cardLabel.setVisible(true);
 		this.setStyle("-fx-background-color: #ffffff");
-		this.getChildren().add(cardLabel);
+		//this.getChildren().add(cardLabel);
 		
 	}
 	

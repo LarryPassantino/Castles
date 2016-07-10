@@ -33,7 +33,20 @@ public class Hand {
 	
 	public void removeCard(Card card){
 		hand.remove(card);
+		attackValue.set(attackValue.get() - card.attack);
+		defenseValue.set(defenseValue.get() - card.defense);
 		handSize.set(handSize.get()-1);
+		
+		if(card.attack > 0){
+			numAttackers.set(numAttackers.get() - 1);
+		}
+	}
+	
+	public Card getRandomCard(){
+		Card card;
+		int index = (int)(Math.random()*hand.size());
+		card = (Card)hand.get(index);
+		return card;
 	}
 	
 	public ArrayList getHandList(){

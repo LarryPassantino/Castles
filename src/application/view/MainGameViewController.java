@@ -331,10 +331,33 @@ public class MainGameViewController {
 					
 					//discard 1
 					if (card.resultCode.equals("dis1")) {
+						discardCard(card);
+						discardDeck.addDiscardedCards(card);
+						Card tempCard;
+						if(isPlayerTurn.get()){
+							tempCard = playerHand.getRandomCard();
+							playerHand.removeCard(tempCard);
+							discardDeck.addDiscardedCards(tempCard);
+						}
+						else{
+							tempCard = aiHand.getRandomCard();
+							aiHand.removeCard(tempCard);
+							discardDeck.addDiscardedCards(tempCard);
+						}
+						setDeckText();
 						message.setText("Random card discarded.");
 					} 
 					//each discard 1
 					else if (card.resultCode.equals("bothdis1")) {
+						discardCard(card);
+						discardDeck.addDiscardedCards(card);
+						Card plCard = playerHand.getRandomCard();
+						playerHand.removeCard(plCard);
+						Card aiCard = aiHand.getRandomCard();
+						aiHand.removeCard(aiCard);
+						discardDeck.addDiscardedCards(plCard);
+						discardDeck.addDiscardedCards(aiCard);
+						setDeckText();
 						message.setText("Random card discarded for each player.");
 					}
 					//draw 2
@@ -352,8 +375,9 @@ public class MainGameViewController {
 					} 
 					//get new card
 					else if (card.resultCode.equals("newC")) {
+						discardCard(card);
 						message.setText("Select a card to discard then a new card will be drawn for you.");
-						playEventButton.setText("Trade");
+						playEventButton.setText("TRADE");
 					} 
 					//get new hand
 					else if (card.resultCode.equals("newH")) {
@@ -386,11 +410,18 @@ public class MainGameViewController {
 			for (Card card : tempHandList) {
 				if (card.isCardSelected) {
 					card.highlightCardOnClick(true);
-					//discard card & draw card
+					if(isPlayerTurn.get()){
+						playerHand.removeCard(card);
+						playerHand.takeCard(drawDeck.drawCard(true));
+					}
+					else{
+						aiHand.removeCard(card);
+						aiHand.takeCard(drawDeck.drawCard(false));
+					}
 				}
 			}
 			eventCardPlayed.set(true);
-			playEventButton.setText("Play Event");
+			playEventButton.setText("PLAY EVENT");
 		}
 	}
 	
