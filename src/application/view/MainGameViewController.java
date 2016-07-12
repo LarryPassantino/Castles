@@ -8,6 +8,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -65,25 +66,25 @@ public class MainGameViewController {
 	@FXML
 	public Label message = new Label("");
 	@FXML
-	public Rectangle castleP1 = new Rectangle(100,100);
+	public ImageView castleP1 = new ImageView();
 	@FXML
-	public Rectangle castleP2 = new Rectangle(100,100);
+	public ImageView castleP2 = new ImageView();
 	@FXML
-	public Rectangle castleP3 = new Rectangle(100,100);
+	public ImageView castleP3 = new ImageView();
 	@FXML
-	public Rectangle castleA1 = new Rectangle(100,100);
+	public ImageView castleA1 = new ImageView();
 	@FXML
-	public Rectangle castleA2 = new Rectangle(100,100);
+	public ImageView castleA2 = new ImageView();
 	@FXML
-	public Rectangle castleA3 = new Rectangle(100,100);
+	public ImageView castleA3 = new ImageView();
 	@FXML
-	public Polygon championP1 = new Polygon();
+	public ImageView championP1 = new ImageView();
 	@FXML
-	public Polygon championP2 = new Polygon();
+	public ImageView championP2 = new ImageView();
 	@FXML
-	public Polygon championA1 = new Polygon();
+	public ImageView championA1 = new ImageView();
 	@FXML
-	public Polygon championA2 = new Polygon();
+	public ImageView championA2 = new ImageView();
 	@FXML
 	public Rectangle drawDeckBlock = new Rectangle(80,100);
 	@FXML
@@ -127,7 +128,6 @@ public class MainGameViewController {
         newGameButton.disableProperty().bind(isGameOver.not());
         drawButton.disableProperty().bind(canDraw.not());
         nextRoundButton.disableProperty().bind(needNextRound.not());
-        //playEventButton.disableProperty().bind(hasEventCard.not());
         BooleanBinding eventBinding = hasEventCard.not().or(eventCardPlayed);
         playEventButton.disableProperty().bind(eventBinding);
 	}
@@ -381,7 +381,43 @@ public class MainGameViewController {
 					} 
 					//get new hand
 					else if (card.resultCode.equals("newH")) {
-						message.setText("Hand discarded and new hand drawn.");
+						discardCard(card);
+						if(isPlayerTurn.get()){
+							playerHandList = playerHand.getHandList();
+							int cardsInHand = playerHand.handSizeProperty().get();
+							for (Card handCard : playerHandList) {
+								playerHand.removeCard(handCard);
+							}
+							playerHandList.clear();
+							playerHand = new Hand(playerCardDisplay.getChildren());
+							if(cardsInHand>0){
+								for(int i=0; i<cardsInHand; i++){
+						        	playerHand.takeCard(drawDeck.drawCard(true));
+						        }
+							}
+							else{
+								playerHand.takeCard(drawDeck.drawCard(true));
+							}
+							message.setText("Your hand discarded and new hand drawn.");
+						}
+						else{
+							aiHandList = aiHand.getHandList();
+							int cardsInHand = aiHand.handSizeProperty().get();
+							for (Card handCard : aiHandList) {
+								aiHand.removeCard(handCard);
+							}
+							aiHandList.clear();
+							aiHand = new Hand(playerCardDisplay.getChildren());
+							if(cardsInHand>0){
+								for(int i=0; i<cardsInHand; i++){
+						        	aiHand.takeCard(drawDeck.drawCard(true));
+						        }
+							}
+							else{
+								aiHand.takeCard(drawDeck.drawCard(true));
+							}
+							message.setText("Computer's hand discarded and new hand drawn.");
+						}
 					}
 					//trade 1 with opponent
 					else if (card.resultCode.equals("trade1")) {
@@ -389,13 +425,24 @@ public class MainGameViewController {
 					} 
 					//opponent discard 1
 					else if (card.resultCode.equals("oppdis1")) {
-						message.setText("Opponent discarded a random card.");
+						discardCard(card);
+						if(isPlayerTurn.get()){
+							aiHand.removeCard(aiHand.getRandomCard());
+							message.setText("Opponent discarded a random card.");
+						}
+						else{
+							playerHand.removeCard(playerHand.getRandomCard());
+							message.setText("Opponent made you discarded a random card.");
+						}
 					}
-					eventCardPlayed.set(true);
-					canEndTurn.set(true);
-					if((isPlayerTurn.get() && playerHand.numAttackersProperty().get() > 3) ||
-							(!isPlayerTurn.get() && aiHand.numAttackersProperty().get() > 3)){
-						canAttack.set(true);
+					if(!playEventButton.getText().equals("TRADE")){
+						eventCardPlayed.set(true);
+						hasEventCard.set(false);
+						canEndTurn.set(true);
+						if((isPlayerTurn.get() && playerHand.numAttackersProperty().get() > 3) ||
+								(!isPlayerTurn.get() && aiHand.numAttackersProperty().get() > 3)){
+							canAttack.set(true);
+						}
 					}
 				}
 			}
@@ -421,9 +468,12 @@ public class MainGameViewController {
 				}
 			}
 			eventCardPlayed.set(true);
+			hasEventCard.set(false);
+			canEndTurn.set(true);
 			playEventButton.setText("PLAY EVENT");
 		}
 	}
+	
 	
 	public void handleNextRound(){
 		needNextRound.set(false);
@@ -455,6 +505,7 @@ public class MainGameViewController {
 			handleEndTurn();
 		}
 	}
+	
 	
 	public void resetScoreArea(){
 		castleP1.setVisible(true);
@@ -500,6 +551,7 @@ public class MainGameViewController {
 		}
 	}
 	
+	
 	public boolean checkForEvent(){
 		ArrayList<Card> tempHandList = new ArrayList<Card>();
 		if(isPlayerTurn.get()){
@@ -515,6 +567,7 @@ public class MainGameViewController {
 		}
 		return false;
 	}
+	
 	
 	public void removeCastle(String who){
 		if(who.equals("player")){

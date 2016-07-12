@@ -19,7 +19,6 @@ public class Deck extends Parent{
 public ArrayList<Card> cards = new ArrayList<Card>();
 	
 	public Deck(){
-
 		/*Rectangle bg = new Rectangle(80,100);
 		bg.setArcWidth(20);
 		bg.setArcHeight(20);
@@ -66,6 +65,7 @@ public ArrayList<Card> cards = new ArrayList<Card>();
 		}
 		if(selectable){
 			card.selectable = true;
+			card.displayFront();
 		}
 		else{
 			card.displayBack();

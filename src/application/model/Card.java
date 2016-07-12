@@ -15,6 +15,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -25,12 +26,10 @@ public class Card extends Pane{
 	public final static String EACH_DISCARD_ONE = "each player \ndiscards one \nrandom card";
 	public final static String DRAW_TWO = "draw two \ncards";
 	public final static String NEW_CARD = "trade card of \nchoosing for \nnew card";
-	public final static String NEW_HAND = "discard hand \nand draw new \nhand of same \nsize(not \nincluding this \ncard)";
+	public final static String NEW_HAND = "discard hand \nand draw new \nhand of same \nsize";
 	public final static String OPPONENT_DISCARD_ONE = "one opponent \ndiscards one \nrandom card";
 	public final static String TRADE_ONE = "trade one \nrandom card \nwith opponent";
-	//public static final BackgroundImage cardBack = 
-			//new BackgroundImage(new Image("cardbacks.png"), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT);
-
+	
 	enum Unit{
 		SPEARMEN(0,1,10), SHIELD_FOOTMEN(1,0,10), ARCHERS(3,3,20),
 		LONGBOWS(0,6,6), GIANT(6,0,6), LADDERS(7,0,4), STRONG_WALLS(0,7,4),
@@ -51,11 +50,11 @@ public class Card extends Pane{
 		FIRE(DISCARD_ONE,"dis1"), STORM(DISCARD_ONE,"dis1"), SPY(DISCARD_ONE,"dis1"), TIRED_ARMY(DISCARD_ONE,"dis1"),
 		EARTHQUAKE(EACH_DISCARD_ONE,"bothdis1"),
 		LUCK(DRAW_TWO,"draw2"), GIFT(DRAW_TWO,"draw2"), BLESSING(DRAW_TWO,"draw2"), FORTUNE(DRAW_TWO,"draw2"),
-		DARING(NEW_CARD,"newC"), FAVOR(NEW_CARD,"newC"), TACTICS(NEW_CARD,"newC"), OPPORTUNITY(NEW_CARD,"newC")/*,
+		DARING(NEW_CARD,"newC"), FAVOR(NEW_CARD,"newC"), TACTICS(NEW_CARD,"newC"), OPPORTUNITY(NEW_CARD,"newC"),
 		CLEAN_SLATE(NEW_HAND,"newH"),
-		TREATY(TRADE_ONE,"trade1"),
+		/*TREATY(TRADE_ONE,"trade1"),*/
 		ILLUSIONIST(OPPONENT_DISCARD_ONE,"oppdis1"), TRICKSTER(OPPONENT_DISCARD_ONE,"oppdis1"),
-		TRAITOR(OPPONENT_DISCARD_ONE,"oppdis1"), THIEF(OPPONENT_DISCARD_ONE,"oppdis1")*/;
+		TRAITOR(OPPONENT_DISCARD_ONE,"oppdis1"), THIEF(OPPONENT_DISCARD_ONE,"oppdis1");
 		
 		final String result, resultCode, type;
 		private Event(String result, String resultCode){
@@ -75,6 +74,8 @@ public class Card extends Pane{
 	public boolean isCardSelected = false;
 	public boolean showBack = false;
 	public Label cardLabel;
+	public String blank = "";
+	public String label;
 	
 	public Card(Unit unit) {
 		this.unit = unit;
@@ -100,7 +101,8 @@ public class Card extends Pane{
 		}
 		this.setStyle("-fx-background-color: #ffffff");
 		
-		cardLabel = new Label(toString());
+		label = toString();
+		cardLabel = new Label(label);
 		cardLabel.setFont(new Font(12.0));
 		cardLabel.setPadding(new Insets(10,10,10,10));
 		
@@ -135,11 +137,11 @@ public class Card extends Pane{
 		Text text = new Text(toString());
 		text.setFont(new Font(13.0));
 		text.setWrappingWidth(75);
-		
-		Label cardLabel = new Label();
+
+		label = toString();
+		cardLabel = new Label(label);
 		cardLabel.setFont(new Font(13.0));
 		cardLabel.setPadding(new Insets(10,10,10,10));
-		cardLabel.setText(toString());
 		cardLabel.setWrapText(true);
 		cardLabel.prefWidth(75);
 		
@@ -159,26 +161,24 @@ public class Card extends Pane{
 	}
 	
 	public void displayFront(){
-		//this.cardLabel.setVisible(true);
+		cardLabel.setText(label);
 		this.setStyle("-fx-background-color: #ffffff");
-		//this.getChildren().add(cardLabel);
-		
 	}
 	
 	public void displayBack(){
-		//this.cardLabel.setVisible(false);
-		//cardLabel.setOpacity(0.0);
+		cardLabel.setText(blank);
 		setStyle("-fx-background-image: url(cardbacks.jpg);"+"-fx-border-color: #ffffff;"+"-fx-border-width: 2;");
 	}
 	
 	public void highlightCard(boolean doHighlight){
 		if(doHighlight){
-			cardLabel.setVisible(true);
-			cardLabel.setOpacity(100.0);
+			cardLabel.setText(label);
+			//cardLabel.setOpacity(100.0);
 			setStyle("-fx-background-color: #ffffff;"+"-fx-border-color: #ffc266;"+"-fx-border-width: 5;");
 		}
 		else{
-			this.cardLabel.setVisible(true);
+			//this.cardLabel.setVisible(true);
+			cardLabel.setText(label);
 			this.setStyle("-fx-background-color: #ffffff");
 		}
 	}
@@ -206,6 +206,11 @@ public class Card extends Pane{
 		}
 		else{
 			String eventString = event.toString();
+			if (eventString.contains("_")) {
+				eventString = eventString.replace('_', '\n');
+			} else {
+				eventString = eventString + "\n";
+			}
 			return eventString + "\n\n\n" + result;
 		}
 	}
