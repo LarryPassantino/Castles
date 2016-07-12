@@ -27,7 +27,7 @@ public class Card extends Pane{
 	public final static String DRAW_TWO = "draw two \ncards";
 	public final static String NEW_CARD = "trade card of \nchoosing for \nnew card";
 	public final static String NEW_HAND = "discard hand \nand draw new \nhand of same \nsize";
-	public final static String OPPONENT_DISCARD_ONE = "one opponent \ndiscards one \nrandom card";
+	public final static String OPPONENT_DISCARD_ONE = "opponent \ndiscards one \nrandom card";
 	public final static String TRADE_ONE = "trade one \nrandom card \nwith opponent";
 	
 	enum Unit{
@@ -76,6 +76,16 @@ public class Card extends Pane{
 	public Label cardLabel;
 	public String blank = "";
 	public String label;
+	
+	public Card() {
+		this.unit = null;
+		this.attack = 0;
+		this.defense = 0;
+		this.type = "";
+		this.result = "";
+		this.resultCode = "";
+		this.event = null;
+	}
 	
 	public Card(Unit unit) {
 		this.unit = unit;
@@ -215,4 +225,30 @@ public class Card extends Pane{
 		}
 	}
 	
+	public int getEventPlayPriority(){
+		if(resultCode.equals("dis1")){
+			return 7;
+		}
+		else if(resultCode.equals("bothdis1")){
+			return 5;
+		}
+		else if(resultCode.equals("draw2")){
+			return 1;		
+		}
+		else if(resultCode.equals("newC")){
+			return 3;
+		}
+		else if(resultCode.equals("newH")){
+			return 4;
+		}
+		else if(resultCode.equals("oppdis1")){
+			return 2;
+		}
+		else if(resultCode.equals("trade1")){
+			return 6;
+		}
+		else{
+			return 10;
+		}
+	}
 }

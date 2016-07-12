@@ -19,16 +19,6 @@ public class Deck extends Parent{
 public ArrayList<Card> cards = new ArrayList<Card>();
 	
 	public Deck(){
-		/*Rectangle bg = new Rectangle(80,100);
-		bg.setArcWidth(20);
-		bg.setArcHeight(20);
-		bg.setFill(Color.WHITE);
-		
-		Text text = new Text(toString());
-		text.setFont(new Font(10.0));
-		text.setWrappingWidth(70);
-		
-		getChildren().add(new StackPane(bg, text));*/
 	}
 
 	public final void refill() {

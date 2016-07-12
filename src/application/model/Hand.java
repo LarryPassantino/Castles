@@ -13,6 +13,7 @@ public class Hand {
 	private SimpleIntegerProperty attackValue = new SimpleIntegerProperty(0);
 	private SimpleIntegerProperty defenseValue = new SimpleIntegerProperty(0);
 	private SimpleIntegerProperty numAttackers = new SimpleIntegerProperty(0);
+	private SimpleIntegerProperty numDefenders = new SimpleIntegerProperty(0);
 	private SimpleIntegerProperty handSize = new SimpleIntegerProperty(0);
 	
 	
@@ -29,6 +30,9 @@ public class Hand {
 		if(card.attack > 0){
 			numAttackers.set(numAttackers.get() + 1);
 		}
+		if(card.defense > 0){
+			numDefenders.set(numDefenders.get() + 1);
+		}
 	}
 	
 	public void removeCard(Card card){
@@ -39,6 +43,9 @@ public class Hand {
 		
 		if(card.attack > 0){
 			numAttackers.set(numAttackers.get() - 1);
+		}
+		if(card.defense > 0){
+			numDefenders.set(numDefenders.get() - 1);
 		}
 	}
 	
@@ -80,11 +87,16 @@ public class Hand {
 		attackValue.set(0);
 		defenseValue.set(0);
 		numAttackers.set(0);
+		numDefenders.set(0);
 		handSize.set(0);
 	}
 	
 	public SimpleIntegerProperty numAttackersProperty(){
 		return numAttackers;
+	}
+	
+	public SimpleIntegerProperty numDefendersProperty(){
+		return numDefenders;
 	}
 	
 	public SimpleIntegerProperty attackValueProperty(){

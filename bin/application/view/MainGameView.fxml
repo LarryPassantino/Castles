@@ -117,11 +117,11 @@
                                     <Font size="20.0" />
                                  </font>
                               </Label>
-                              <TextArea fx:id="drawDeckText" editable="false" maxHeight="100.0" maxWidth="80.0" prefHeight="100.0" prefWidth="80.0" wrapText="true">
+                              <TextArea fx:id="drawDeckText" editable="false" maxHeight="180.0" maxWidth="100.0" prefHeight="180.0" prefWidth="100.0" wrapText="true">
                                  <font>
                                     <Font size="10.0" />
                                  </font></TextArea>
-                              <TextArea fx:id="discardDeckText" editable="false" maxHeight="100.0" maxWidth="80.0" prefHeight="100.0" prefWidth="80.0" wrapText="true">
+                              <TextArea fx:id="discardDeckText" editable="false" maxHeight="180.0" maxWidth="100.0" prefHeight="180.0" prefWidth="100.0" wrapText="true">
                                  <HBox.margin>
                                     <Insets />
                                  </HBox.margin>

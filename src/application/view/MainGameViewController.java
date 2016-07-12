@@ -136,6 +136,7 @@ public class MainGameViewController {
 	public void handleEndTurn(){
 		canEndTurn.set(false);
 		eventCardPlayed.set(false);
+		hasEventCard.set(false);
 		if(isPlayerTurn.get() == true){
 			if(playerHand.handSizeProperty().get() > 7){
 				handleAttack();
@@ -145,6 +146,7 @@ public class MainGameViewController {
 				isPlayerTurn.set(false);
 				canDraw.set(false);
 				handleDraw();
+				///////////////////////////////////////////////////do events for computer's turn
 				setDeckText();
 				if(aiHand.numAttackersProperty().get() > 3){
 					canAttack.set(true);
@@ -338,14 +340,15 @@ public class MainGameViewController {
 							tempCard = playerHand.getRandomCard();
 							playerHand.removeCard(tempCard);
 							discardDeck.addDiscardedCards(tempCard);
+							message.setText("YOU DISCARDED A RANDOM CARD.");
 						}
 						else{
 							tempCard = aiHand.getRandomCard();
 							aiHand.removeCard(tempCard);
 							discardDeck.addDiscardedCards(tempCard);
+							message.setText("YOUR OPPONENT DISCARDED A RANDOM CARD.");
 						}
 						setDeckText();
-						message.setText("Random card discarded.");
 					} 
 					//each discard 1
 					else if (card.resultCode.equals("bothdis1")) {
@@ -358,7 +361,7 @@ public class MainGameViewController {
 						discardDeck.addDiscardedCards(plCard);
 						discardDeck.addDiscardedCards(aiCard);
 						setDeckText();
-						message.setText("Random card discarded for each player.");
+						message.setText("EACH PLAYER DISCARDED A RANDOM CARD.");
 					}
 					//draw 2
 					else if (card.resultCode.equals("draw2")) {
@@ -366,12 +369,13 @@ public class MainGameViewController {
 						if(isPlayerTurn.get()){
 							playerHand.takeCard(drawDeck.drawCard(true));
 							playerHand.takeCard(drawDeck.drawCard(true));
+							message.setText("YOU DREW TWO NEW CARDS.");
 						}
 						else{
 							aiHand.takeCard(drawDeck.drawCard(false));
 							aiHand.takeCard(drawDeck.drawCard(false));
+							message.setText("YOUR OPPONENT DREW TWO NEW CARDS.");
 						}
-						message.setText("Two new cards drawn.");
 					} 
 					//get new card
 					else if (card.resultCode.equals("newC")) {
@@ -398,7 +402,7 @@ public class MainGameViewController {
 							else{
 								playerHand.takeCard(drawDeck.drawCard(true));
 							}
-							message.setText("Your hand discarded and new hand drawn.");
+							message.setText("YOUR HAND WAS DISCARDED AND NEW CARDS DRAWN.");
 						}
 						else{
 							aiHandList = aiHand.getHandList();
@@ -416,23 +420,23 @@ public class MainGameViewController {
 							else{
 								aiHand.takeCard(drawDeck.drawCard(true));
 							}
-							message.setText("Computer's hand discarded and new hand drawn.");
+							message.setText("YOUR OPPONENT'S HAND WAS DISCARDED AND NEW CARDS DRAWN.");
 						}
 					}
-					//trade 1 with opponent
+					//trade 1 with opponent//////////////////////////////////////////////////////////////////////////////////////////
 					else if (card.resultCode.equals("trade1")) {
-						message.setText("One card traded with opponent at random.");
+						message.setText("YOU AND OPPONENT TRADED A RANDOM CARD.");
 					} 
 					//opponent discard 1
 					else if (card.resultCode.equals("oppdis1")) {
 						discardCard(card);
 						if(isPlayerTurn.get()){
 							aiHand.removeCard(aiHand.getRandomCard());
-							message.setText("Opponent discarded a random card.");
+							message.setText("YOUR OPPONENT DISCARDED A RANDOM CARD.");
 						}
 						else{
 							playerHand.removeCard(playerHand.getRandomCard());
-							message.setText("Opponent made you discarded a random card.");
+							message.setText("YOUR OPPONENT MADE YOU DISCARD A RANDOM CARD.");
 						}
 					}
 					if(!playEventButton.getText().equals("TRADE")){
@@ -568,6 +572,116 @@ public class MainGameViewController {
 		return false;
 	}
 	
+	public Card getPreferredEventCard(){
+		Card prefEventCard = new Card();
+		int priority = 11;
+		ArrayList<Card> tempHandList = aiHand.getHandList();
+		for (Card card : tempHandList) {
+			if(card.type.equals("event")){
+				if(card.getEventPlayPriority() < priority){
+					prefEventCard = card;
+				}
+			}
+		}
+		return prefEventCard;
+	}
+	
+	public Card selectCardToTradeIn(){
+		Card tradeCard = new Card();
+		ArrayList<Card> tempHandList = aiHand.getHandList();
+
+		//looking for bad events
+		for (Card card : tempHandList) {
+			boolean eventCardSelected = false;
+			if(card.type.equals("event")){
+				int priority = 4;
+				if(card.getEventPlayPriority() > priority){
+					tradeCard = card;
+					priority = card.getEventPlayPriority();
+					eventCardSelected = true;
+				}
+				else if(card.getEventPlayPriority() == 4 && priority == 4){
+					tradeCard = card;
+					eventCardSelected = true;
+				}
+			}
+			if(eventCardSelected){
+				return tradeCard;
+			}
+		}
+		
+		//this case is if defense is needed
+		if((aiHand.numAttackersProperty().get() < aiHand.numDefendersProperty().get()) && 
+				(aiHand.attackValueProperty().get() < aiHand.defenseValueProperty().get())){
+			
+			for (Card card : tempHandList) {
+				boolean unitCardSelected = false;
+				//if no bad events, looking for worst attacking unit
+				if(card.type.equals("unit")){
+					int lowestAttack = 11;
+					if(card.attack < lowestAttack){
+						tradeCard = card;
+						unitCardSelected = true;
+						lowestAttack = card.attack;
+					}
+				}
+				if(unitCardSelected){
+					return tradeCard;
+				}
+			}
+			for (Card card : tempHandList) {
+				boolean unitCardSelected = false;
+				//if no bad attacking unit, looking for worst defense unit
+				if(card.type.equals("unit")){
+					int lowestDefense = 11;
+					if(card.attack < lowestDefense){
+						tradeCard = card;
+						unitCardSelected = true;
+						lowestDefense = card.defense;
+					}
+				}
+				if(unitCardSelected){
+					return tradeCard;
+				}
+			}
+		}
+		
+		//this case is if attack is needed
+		else{
+			for (Card card : tempHandList) {
+				boolean unitCardSelected = false;
+				//if no bad event, looking for worst defense unit
+				if(card.type.equals("unit")){
+					int lowestDefense = 11;
+					if(card.attack < lowestDefense){
+						tradeCard = card;
+						unitCardSelected = true;
+						lowestDefense = card.defense;
+					}
+				}
+				if(unitCardSelected){
+					return tradeCard;
+				}
+			}
+			for (Card card : tempHandList) {
+				boolean unitCardSelected = false;
+				//if no bad defense unit, looking for worst attack unit
+				if(card.type.equals("unit")){
+					int lowestAttack = 11;
+					if(card.attack < lowestAttack){
+						tradeCard = card;
+						unitCardSelected = true;
+						lowestAttack = card.attack;
+					}
+				}
+				if(unitCardSelected){
+					return tradeCard;
+				}
+			}
+		}
+		return aiHand.getRandomCard();
+	}
+	
 	
 	public void removeCastle(String who){
 		if(who.equals("player")){
@@ -659,7 +773,9 @@ public class MainGameViewController {
 	}
 
 	public void setDeckText(){
-		drawDeckText.setText("CARDS IN DECK:\n\n\n" + drawDeck.getDeckSize());
-		discardDeckText.setText("CARDS IN DISCARD:\n\n\n" + discardDeck.getDeckSize());
+		drawDeckText.setFont(new Font(16.0));
+		discardDeckText.setFont(new Font(16.0));
+		drawDeckText.setText("DECK:\n\n\n" + drawDeck.getDeckSize() + "  CARDS");
+		discardDeckText.setText("DISCARD:\n\n\n" + discardDeck.getDeckSize() + "  CARDS");
 	}
 }
