@@ -101,6 +101,7 @@ public class MainGameViewController {
 	private int attackerPower = 0;
 	private int defenderPower = 0;
 	private String roundWinner = "";
+	private boolean aiEventPlayed = false;
 	
 	private SimpleBooleanProperty isPlayerTurn = new SimpleBooleanProperty(true);
 	private SimpleBooleanProperty isGameOver = new SimpleBooleanProperty(false);
@@ -147,6 +148,20 @@ public class MainGameViewController {
 				canDraw.set(false);
 				handleDraw();
 				///////////////////////////////////////////////////do events for computer's turn
+				if (checkForEvent() || !eventCardPlayed.get()) {
+					hasEventCard.set(true);
+					Card eventCard = getPreferredEventCard();
+					eventCard.selectable = true;
+					eventCard.isCardSelected = true;
+					handlePlayEvent();
+					if(eventCard.resultCode.equals("newC")){
+						Card tradeCard = selectCardToTradeIn();
+						tradeCard.isCardSelected = true;
+						handlePlayEvent();
+					}
+					aiEventPlayed = true;
+				}
+				////////////////////////////////////////////////////////////////////////////////
 				setDeckText();
 				if(aiHand.numAttackersProperty().get() > 3){
 					canAttack.set(true);
@@ -188,6 +203,13 @@ public class MainGameViewController {
 				}
 			}
 			if(!maxAttack.get()){
+				/*if(aiEventPlayed){
+					message.setText(message.getText() + "\n\nPLAYER'S TURN\nDRAW A CARD");
+					aiEventPlayed = false;
+				}
+				else{
+					message.setText("PLAYER'S TURN\nDRAW A CARD");
+				}*/
 				message.setText("PLAYER'S TURN\nDRAW A CARD");
 			}
 		}
@@ -328,9 +350,9 @@ public class MainGameViewController {
 			}
 			for (Card card : tempHandList) {
 				if (card.isCardSelected && card.type.equals("event")) {
-					card.highlightCardOnClick(true);
-					//need the actual actions coded... this is just messages
-					
+					if (!isPlayerTurn.get()) {
+						card.highlightCardOnClick(true);
+					}
 					//discard 1
 					if (card.resultCode.equals("dis1")) {
 						discardCard(card);
@@ -460,8 +482,8 @@ public class MainGameViewController {
 			}
 			for (Card card : tempHandList) {
 				if (card.isCardSelected) {
-					card.highlightCardOnClick(true);
 					if(isPlayerTurn.get()){
+						card.highlightCardOnClick(true);
 						playerHand.removeCard(card);
 						playerHand.takeCard(drawDeck.drawCard(true));
 					}
@@ -475,6 +497,10 @@ public class MainGameViewController {
 			hasEventCard.set(false);
 			canEndTurn.set(true);
 			playEventButton.setText("PLAY EVENT");
+			if((isPlayerTurn.get() && playerHand.numAttackersProperty().get() > 3) ||
+					(!isPlayerTurn.get() && aiHand.numAttackersProperty().get() > 3)){
+				canAttack.set(true);
+			}
 		}
 	}
 	
