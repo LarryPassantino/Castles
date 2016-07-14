@@ -102,6 +102,7 @@ public class MainGameViewController {
 	private int defenderPower = 0;
 	private String roundWinner = "";
 	private boolean aiEventPlayed = false;
+	private int messageLifeCounter = 0;
 	
 	private SimpleBooleanProperty isPlayerTurn = new SimpleBooleanProperty(true);
 	private SimpleBooleanProperty isGameOver = new SimpleBooleanProperty(false);
@@ -135,6 +136,11 @@ public class MainGameViewController {
 	
 	@FXML
 	public void handleEndTurn(){
+		messageLifeCounter++;
+		if(messageLifeCounter == 3){
+			messageLifeCounter=0;
+			message.setText("");
+		}
 		canEndTurn.set(false);
 		eventCardPlayed.set(false);
 		hasEventCard.set(false);
@@ -171,7 +177,7 @@ public class MainGameViewController {
 				}
 			}
 			if(!maxAttack.get()){
-				message.setText("COMPUTER'S TURN");
+				//message.setText("COMPUTER'S TURN");
 				if(canAttack.get() && aiHand.numAttackersProperty().get() > 6 && aiHand.attackValueProperty().get() > 20){
 					handleAttack();
 				}
@@ -202,16 +208,9 @@ public class MainGameViewController {
 					canAttack.set(false);
 				}
 			}
-			if(!maxAttack.get()){
-				/*if(aiEventPlayed){
-					message.setText(message.getText() + "\n\nPLAYER'S TURN\nDRAW A CARD");
-					aiEventPlayed = false;
-				}
-				else{
-					message.setText("PLAYER'S TURN\nDRAW A CARD");
-				}*/
-				message.setText("PLAYER'S TURN\nDRAW A CARD");
-			}
+			/*if(!maxAttack.get()){
+				//message.setText("PLAYER'S TURN\nDRAW A CARD");
+			}*/
 		}
 	}
 	
@@ -371,6 +370,7 @@ public class MainGameViewController {
 							message.setText("YOUR OPPONENT DISCARDED A RANDOM CARD.");
 						}
 						setDeckText();
+						messageLifeCounter=1;
 					} 
 					//each discard 1
 					else if (card.resultCode.equals("bothdis1")) {
@@ -384,6 +384,7 @@ public class MainGameViewController {
 						discardDeck.addDiscardedCards(aiCard);
 						setDeckText();
 						message.setText("EACH PLAYER DISCARDED A RANDOM CARD.");
+						messageLifeCounter=1;
 					}
 					//draw 2
 					else if (card.resultCode.equals("draw2")) {
@@ -398,11 +399,12 @@ public class MainGameViewController {
 							aiHand.takeCard(drawDeck.drawCard(false));
 							message.setText("YOUR OPPONENT DREW TWO NEW CARDS.");
 						}
+						messageLifeCounter=1;
 					} 
 					//get new card
 					else if (card.resultCode.equals("newC")) {
 						discardCard(card);
-						message.setText("Select a card to discard then a new card will be drawn for you.");
+						message.setText("SELECT A CARD TO TRADE IN FOR A NEW CARD.");
 						playEventButton.setText("TRADE");
 					} 
 					//get new hand
@@ -433,21 +435,34 @@ public class MainGameViewController {
 								aiHand.removeCard(handCard);
 							}
 							aiHandList.clear();
-							aiHand = new Hand(playerCardDisplay.getChildren());
+							aiHand = new Hand(aiCardDisplay.getChildren());
 							if(cardsInHand>0){
 								for(int i=0; i<cardsInHand; i++){
-						        	aiHand.takeCard(drawDeck.drawCard(true));
+						        	aiHand.takeCard(drawDeck.drawCard(false));
 						        }
 							}
 							else{
-								aiHand.takeCard(drawDeck.drawCard(true));
+								aiHand.takeCard(drawDeck.drawCard(false));
 							}
 							message.setText("YOUR OPPONENT'S HAND WAS DISCARDED AND NEW CARDS DRAWN.");
 						}
+						messageLifeCounter=1;
 					}
 					//trade 1 with opponent//////////////////////////////////////////////////////////////////////////////////////////
 					else if (card.resultCode.equals("trade1")) {
-						message.setText("YOU AND OPPONENT TRADED A RANDOM CARD.");
+						discardCard(card);
+						Card playerCard = playerHand.getRandomCard();
+						Card aiCard = aiHand.getRandomCard();
+						playerCard.selectable = false;
+						playerCard.displayBack();
+						aiCard.selectable = true;
+						aiCard.displayFront();
+						playerHand.removeCard(playerCard);
+						playerHand.takeCard(aiCard);
+						aiHand.removeCard(aiCard);
+						aiHand.takeCard(playerCard);
+						message.setText("YOU AND YOUR OPPONENT TRADED A RANDOM CARD.");
+						messageLifeCounter=1;
 					} 
 					//opponent discard 1
 					else if (card.resultCode.equals("oppdis1")) {
@@ -460,6 +475,7 @@ public class MainGameViewController {
 							playerHand.removeCard(playerHand.getRandomCard());
 							message.setText("YOUR OPPONENT MADE YOU DISCARD A RANDOM CARD.");
 						}
+						messageLifeCounter=1;
 					}
 					if(!playEventButton.getText().equals("TRADE")){
 						eventCardPlayed.set(true);
@@ -486,13 +502,16 @@ public class MainGameViewController {
 						card.highlightCardOnClick(true);
 						playerHand.removeCard(card);
 						playerHand.takeCard(drawDeck.drawCard(true));
+						message.setText("YOU TRADED A CHOSEN CARD FOR A NEW CARD.");
 					}
 					else{
 						aiHand.removeCard(card);
 						aiHand.takeCard(drawDeck.drawCard(false));
+						message.setText("YOUR OPPONENT TRADED A CHOSEN CARD FOR A NEW CARD.");
 					}
 				}
 			}
+			messageLifeCounter=1;
 			eventCardPlayed.set(true);
 			hasEventCard.set(false);
 			canEndTurn.set(true);
@@ -506,6 +525,7 @@ public class MainGameViewController {
 	
 	
 	public void handleNextRound(){
+		messageLifeCounter=1;
 		needNextRound.set(false);
 		maxAttack.set(false);
 		playerHand.reset();

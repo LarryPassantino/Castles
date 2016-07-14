@@ -1,5 +1,7 @@
 package application.model;
 
+import java.util.ArrayList;
+
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Parent;
@@ -30,6 +32,8 @@ public class Card extends Pane{
 	public final static String OPPONENT_DISCARD_ONE = "opponent \ndiscards one \nrandom card";
 	public final static String TRADE_ONE = "trade one \nrandom card \nwith opponent";
 	
+	public final static ArrayList<Card> allCards = new ArrayList<Card>();
+	
 	enum Unit{
 		SPEARMEN(0,1,10), SHIELD_FOOTMEN(1,0,10), ARCHERS(3,3,20),
 		LONGBOWS(0,6,6), GIANT(6,0,6), LADDERS(7,0,4), STRONG_WALLS(0,7,4),
@@ -52,7 +56,7 @@ public class Card extends Pane{
 		LUCK(DRAW_TWO,"draw2"), GIFT(DRAW_TWO,"draw2"), BLESSING(DRAW_TWO,"draw2"), FORTUNE(DRAW_TWO,"draw2"),
 		DARING(NEW_CARD,"newC"), FAVOR(NEW_CARD,"newC"), TACTICS(NEW_CARD,"newC"), OPPORTUNITY(NEW_CARD,"newC"),
 		CLEAN_SLATE(NEW_HAND,"newH"),
-		/*TREATY(TRADE_ONE,"trade1"),*/
+		TREATY(TRADE_ONE,"trade1"),
 		ILLUSIONIST(OPPONENT_DISCARD_ONE,"oppdis1"), TRICKSTER(OPPONENT_DISCARD_ONE,"oppdis1"),
 		TRAITOR(OPPONENT_DISCARD_ONE,"oppdis1"), THIEF(OPPONENT_DISCARD_ONE,"oppdis1");
 		
@@ -119,7 +123,14 @@ public class Card extends Pane{
 		this.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
 		    @Override
 		    public void handle(MouseEvent mouseEvent) {
-		    	highlightCardOnClick(selectable);
+		    	if(selectable){
+		    		for (Card card : allCards) {
+		    			if(card.selectable == true){
+		    				card.highlightCardOnClick(false);
+		    			}
+					}
+		    		highlightCardOnClick(selectable);
+		    	}
 		    }
 		});
 		
@@ -159,7 +170,14 @@ public class Card extends Pane{
 		this.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
 		    @Override
 		    public void handle(MouseEvent mouseEvent) {
-		    	highlightCardOnClick(selectable);
+		    	if(selectable){
+		    		for (Card card : allCards) {
+		    			if(card.selectable == true){
+		    				card.highlightCardOnClick(false);
+		    			}
+					}
+		    		highlightCardOnClick(selectable);
+		    	}
 		    }
 		});
 		
@@ -183,13 +201,11 @@ public class Card extends Pane{
 	public void highlightCard(boolean doHighlight){
 		if(doHighlight){
 			cardLabel.setText(label);
-			//cardLabel.setOpacity(100.0);
 			setStyle("-fx-background-color: #ffffff;"+"-fx-border-color: #ffc266;"+"-fx-border-width: 5;");
 		}
 		else{
-			//this.cardLabel.setVisible(true);
 			cardLabel.setText(label);
-			this.setStyle("-fx-background-color: #ffffff");
+			setStyle("-fx-background-color: #ffffff");
 		}
 	}
 	

@@ -25,11 +25,17 @@ public ArrayList<Card> cards = new ArrayList<Card>();
 		cards.clear();
 		for(Unit unit : Unit.values()){
 			for(int i=0; i<unit.quantity; i++){
-				cards.add(new Card(unit));
+				Card card = new Card(unit);
+				cards.add(card);
+				Card.allCards.add(card);
+				//cards.add(new Card(unit));
 			}
 		}
 		for(Event event : Event.values()){
-			cards.add(new Card(event));
+			Card card = new Card(event);
+			cards.add(card);
+			Card.allCards.add(card);
+			//cards.add(new Card(event));
 		}
 	}
 	
