@@ -360,16 +360,26 @@ public class MainGameViewController {
 						discardDeck.addDiscardedCards(card);
 						Card tempCard;
 						if(isPlayerTurn.get()){
-							tempCard = playerHand.getRandomCard();
-							playerHand.removeCard(tempCard);
-							discardDeck.addDiscardedCards(tempCard);
-							message.setText("YOU DISCARDED A RANDOM CARD.");
+							if(playerHand.handSizeProperty().get() > 0){
+								tempCard = playerHand.getRandomCard();
+								playerHand.removeCard(tempCard);
+								discardDeck.addDiscardedCards(tempCard);
+								message.setText("YOU DISCARDED A RANDOM CARD.");
+							}
+							else{
+								message.setText("YOU HAVE NO CARDS TO DISCARD.");
+							}
 						}
 						else{
-							tempCard = aiHand.getRandomCard();
-							aiHand.removeCard(tempCard);
-							discardDeck.addDiscardedCards(tempCard);
-							message.setText("YOUR OPPONENT DISCARDED A RANDOM CARD.");
+							if(playerHand.handSizeProperty().get() > 0){
+								tempCard = aiHand.getRandomCard();
+								aiHand.removeCard(tempCard);
+								discardDeck.addDiscardedCards(tempCard);
+								message.setText("YOUR OPPONENT DISCARDED A RANDOM CARD.");
+							}
+							else{
+								message.setText("YOUR OPPONENT HAD NO CARDS TO DISCARD.");
+							}
 						}
 						setDeckText();
 						messageLifeCounter=1;
@@ -378,14 +388,19 @@ public class MainGameViewController {
 					else if (card.resultCode.equals("bothdis1")) {
 						discardCard(card);
 						discardDeck.addDiscardedCards(card);
-						Card plCard = playerHand.getRandomCard();
-						playerHand.removeCard(plCard);
-						Card aiCard = aiHand.getRandomCard();
-						aiHand.removeCard(aiCard);
-						discardDeck.addDiscardedCards(plCard);
-						discardDeck.addDiscardedCards(aiCard);
+						if (playerHand.handSizeProperty().get() > 0) {
+							Card plCard = playerHand.getRandomCard();
+							playerHand.removeCard(plCard);
+							discardDeck.addDiscardedCards(plCard);
+							
+						}
+						if (aiHand.handSizeProperty().get() > 0) {
+							Card aiCard = aiHand.getRandomCard();
+							aiHand.removeCard(aiCard);
+							discardDeck.addDiscardedCards(aiCard);
+						}
 						setDeckText();
-						message.setText("EACH PLAYER DISCARDED A RANDOM CARD.");
+						message.setText("EACH PLAYER DISCARDED A RANDOM CARD IF ANY.");
 						messageLifeCounter=1;
 					}
 					//draw 2
@@ -406,8 +421,18 @@ public class MainGameViewController {
 					//get new card
 					else if (card.resultCode.equals("newC")) {
 						discardCard(card);
-						message.setText("SELECT A CARD TO TRADE IN FOR A NEW CARD.");
-						playEventButton.setText("TRADE");
+						discardDeck.addDiscardedCards(card);
+						if(isPlayerTurn.get() && playerHand.handSizeProperty().get() > 0){
+							message.setText("SELECT A CARD TO TRADE IN FOR A NEW CARD.");
+							playEventButton.setText("TRADE");
+						}
+						else if(!isPlayerTurn.get() && aiHand.handSizeProperty().get() > 0){
+							message.setText("SELECT A CARD TO TRADE IN FOR A NEW CARD.");
+							playEventButton.setText("TRADE");
+						}
+						else{
+							message.setText("NO CARDS TO TADE IN.");
+						}
 					} 
 					//get new hand
 					else if (card.resultCode.equals("newH")) {
@@ -469,13 +494,25 @@ public class MainGameViewController {
 					//opponent discard 1
 					else if (card.resultCode.equals("oppdis1")) {
 						discardCard(card);
+						discardDeck.addDiscardedCards(card);
 						if(isPlayerTurn.get()){
-							aiHand.removeCard(aiHand.getRandomCard());
-							message.setText("YOUR OPPONENT DISCARDED A RANDOM CARD.");
+							if (aiHand.handSizeProperty().get() > 0) {
+								aiHand.removeCard(aiHand.getRandomCard());
+								message.setText("YOUR OPPONENT DISCARDED A RANDOM CARD.");
+							}
+							else{
+								message.setText("YOUR OPPONENT HAD NO CARDS TO DISCARD.");
+							}
 						}
 						else{
-							playerHand.removeCard(playerHand.getRandomCard());
-							message.setText("YOUR OPPONENT MADE YOU DISCARD A RANDOM CARD.");
+							if (playerHand.handSizeProperty().get() > 0) {
+								playerHand.removeCard(playerHand
+										.getRandomCard());
+								message.setText("YOUR OPPONENT MADE YOU DISCARD A RANDOM CARD.");
+							}
+							else{
+								message.setText("YOUR OPPONENT TRIED TO MAKE YOU DISCARD, BUT YOU HAVE NO CARDS.");
+							}
 						}
 						messageLifeCounter=1;
 					}

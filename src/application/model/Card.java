@@ -28,13 +28,13 @@ import javafx.scene.text.TextAlignment;
 
 public class Card extends GridPane{
 	
-	public final static String DISCARD_ONE = "discard one \nrandom card";
-	public final static String EACH_DISCARD_ONE = "each player \ndiscards one \nrandom card";
-	public final static String DRAW_TWO = "draw two \ncards";
-	public final static String NEW_CARD = "trade card of \nchoosing for \nnew card";
-	public final static String NEW_HAND = "discard hand \nand draw new \nhand of same \nsize";
-	public final static String OPPONENT_DISCARD_ONE = "opponent \ndiscards one \nrandom card";
-	public final static String TRADE_ONE = "trade one \nrandom card \nwith opponent";
+	public final static String DISCARD_ONE = "discard one random card";
+	public final static String EACH_DISCARD_ONE = "each player discards one random card";
+	public final static String DRAW_TWO = "draw two cards";
+	public final static String NEW_CARD = "trade card of choosing for new card";
+	public final static String NEW_HAND = "discard hand and draw new hand of same size";
+	public final static String OPPONENT_DISCARD_ONE = "opponent discards one random card";
+	public final static String TRADE_ONE = "trade one random card with opponent";
 	
 	public final static ArrayList<Card> allCards = new ArrayList<Card>();
 	
@@ -84,11 +84,13 @@ public class Card extends GridPane{
 	public Label cardLabel;
 	public String blank = "";
 	public String label;
-	public String cardName, cardAttack, cardDefense;
+	public String cardName, cardAttack, cardDefense, eventResult;
 	public Label cardNameLabel = new Label("");
 	public Label cardAttackLabel = new Label("");
 	public Label cardDefenseLabel = new Label("");
 	public String unitToString;
+	public Label eventResultLabel = new Label("");
+	public String eventToString;
 	
 	public Card() {
 		this.unit = null;
@@ -119,12 +121,12 @@ public class Card extends GridPane{
 		cardAttackLabel.setText(cardAttack);
 		cardDefenseLabel.setText(cardDefense);
 		
-		this.prefHeight(200);
-		this.prefWidth(160);
-		this.minHeight(200);
-		this.minWidth(160);
-		this.setHeight(200);
-		this.setWidth(160);
+		this.prefHeight(180);
+		this.prefWidth(170);
+		this.minHeight(180);
+		this.minWidth(170);
+		this.setHeight(180);
+		this.setWidth(170);
 		this.setPadding(new Insets(20,20,0,20));
 		
 		cardNameLabel.setFont(new Font(15.0));
@@ -165,24 +167,35 @@ public class Card extends GridPane{
 		this.result = event.result;
 		this.resultCode = event.resultCode;
 		
-		this.prefHeight(200);
-		this.prefWidth(160);
-		this.minHeight(200);
-		this.minWidth(160);
-		this.setHeight(200);
-		this.setWidth(160);
-		this.setStyle("-fx-background-color: #ffffff");
+		this.prefHeight(180);
+		this.prefWidth(170);
+		this.minHeight(180);
+		this.minWidth(170);
+		this.setHeight(180);
+		this.setWidth(170);
+		this.setPadding(new Insets(20,0,25,20));
 		
-		Text text = new Text(toString());
-		text.setFont(new Font(13.0));
-		text.setWrappingWidth(75);
 
-		label = toString();
-		cardLabel = new Label(label);
-		cardLabel.setFont(new Font(13.0));
-		cardLabel.setPadding(new Insets(10,10,10,10));
-		cardLabel.setWrapText(true);
-		cardLabel.prefWidth(75);
+		eventToString = event.toString();
+		if(eventToString.contains("_")){
+			eventToString = eventToString.replace('_', ' ');
+		}
+		this.cardName = eventToString;
+		this.eventResult = result;
+		cardNameLabel.setText(cardName);
+		eventResultLabel.setText(eventResult);
+		
+		cardNameLabel.setFont(new Font(15.0));
+		cardNameLabel.setTextAlignment(TextAlignment.CENTER);
+		cardNameLabel.setAlignment(Pos.CENTER);
+		eventResultLabel.setFont(new Font(12.0));
+		eventResultLabel.setAlignment(Pos.CENTER);
+		eventResultLabel.setWrapText(true);
+		this.setHgrow(eventResultLabel, Priority.ALWAYS);
+		this.setVgap(40);
+		this.setHgap(0);
+		this.add(cardNameLabel, 0, 0, 1, 1);
+		this.add(eventResultLabel, 0, 1, 1, 1);
 		
 		
 		this.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
@@ -199,7 +212,7 @@ public class Card extends GridPane{
 		    }
 		});
 		
-		this.getChildren().add(cardLabel);
+		//this.getChildren().add(cardLabel);
 	}
 	
 	public Pane getCardPane(){
@@ -208,8 +221,11 @@ public class Card extends GridPane{
 	
 	public void displayFront(){
 		if(type.equals("event")){
-			cardLabel.setText(label);
-			this.setStyle("-fx-background-color: #ffffff");
+			/*cardLabel.setText(label);
+			this.setStyle("-fx-background-color: #ffffff");*/
+			cardNameLabel.setVisible(true);
+			eventResultLabel.setVisible(true);
+			setStyle("-fx-background-image: url(event_card_front.png);");
 		}
 		else{
 			cardNameLabel.setVisible(true);
@@ -221,7 +237,9 @@ public class Card extends GridPane{
 	
 	public void displayBack(){
 		if(type.equals("event")){
-			cardLabel.setText(blank);
+			//cardLabel.setText(blank);
+			cardNameLabel.setVisible(false);
+			eventResultLabel.setVisible(false);
 			setStyle("-fx-background-image: url(wide_cardbacks.jpg);"+"-fx-border-color: #ffffff;"+"-fx-border-width: 2;");
 		}
 		else{
@@ -241,8 +259,11 @@ public class Card extends GridPane{
 				setStyle("-fx-background-image: url(unit_card_front_new.png);"+"-fx-border-color: #8400ff;"+"-fx-border-width: 4;");
 			}
 			else{
-				cardLabel.setText(label);
-				setStyle("-fx-background-color: #ffffff;"+"-fx-border-color: #ffc266;"+"-fx-border-width: 5;");
+				/*cardLabel.setText(label);
+				setStyle("-fx-background-color: #ffffff;"+"-fx-border-color: #ffc266;"+"-fx-border-width: 5;");*/
+				cardNameLabel.setVisible(true);
+				eventResultLabel.setVisible(true);
+				setStyle("-fx-background-image: url(event_card_front.png);"+"-fx-border-color: #8400ff;"+"-fx-border-width: 4;");
 			}
 		}
 		else{
@@ -253,8 +274,11 @@ public class Card extends GridPane{
 				setStyle("-fx-background-image: url(unit_card_front_new.png);");
 			}
 			else{
-				cardLabel.setText(label);
-				setStyle("-fx-background-color: #ffffff");
+				/*cardLabel.setText(label);
+				setStyle("-fx-background-color: #ffffff");*/
+				cardNameLabel.setVisible(true);
+				eventResultLabel.setVisible(true);
+				setStyle("-fx-background-image: url(event_card_front.png);");
 			}
 		}
 	}
@@ -265,7 +289,8 @@ public class Card extends GridPane{
 				setStyle("-fx-background-image: url(unit_card_front_new.png);"+"-fx-border-color: #99ff33;"+"-fx-border-width: 4;");
 			}
 			else{
-				this.setStyle("-fx-background-color: #ffffff;"+"-fx-border-color: #99ff33;"+"-fx-border-width: 5;");
+				//this.setStyle("-fx-background-color: #ffffff;"+"-fx-border-color: #99ff33;"+"-fx-border-width: 5;");
+				setStyle("-fx-background-image: url(event_card_front.png);"+"-fx-border-color: #99ff33;"+"-fx-border-width: 4;");
 			}
 			isCardSelected = true;
 		}
@@ -274,7 +299,8 @@ public class Card extends GridPane{
 				setStyle("-fx-background-image: url(unit_card_front_new.png);");
 			}
 			else{
-				this.setStyle("-fx-background-color: #ffffff");
+				//this.setStyle("-fx-background-color: #ffffff");
+				setStyle("-fx-background-image: url(event_card_front.png);");
 			}
 			isCardSelected = false;
 		}
