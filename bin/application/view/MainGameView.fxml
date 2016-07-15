@@ -13,106 +13,21 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane prefHeight="800.0" prefWidth="1700.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.view.MainGameViewController">
-   <right>
-      <AnchorPane prefHeight="200.0" prefWidth="350.0" BorderPane.alignment="CENTER">
-         <children>
-            <HBox layoutX="75.0" layoutY="202.0" prefHeight="800.0" prefWidth="350.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-               <children>
-                  <VBox fx:id="playerScoreArea" alignment="TOP_CENTER" prefHeight="200.0" prefWidth="175.0" spacing="40.0">
-                     <children>
-                        <Label text="PLAYER" textFill="WHITE">
-                           <font>
-                              <Font name="System Bold" size="24.0" />
-                           </font>
-                           <padding>
-                              <Insets top="30.0" />
-                           </padding>
-                        </Label>
-                        <ImageView fx:id="castleP1" fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../../blue_castle.png" />
-                           </image>
-                        </ImageView>
-                        <ImageView fx:id="castleP2" fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../../blue_castle.png" />
-                           </image>
-                        </ImageView>
-                        <ImageView fx:id="castleP3" fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../../blue_castle.png" />
-                           </image>
-                        </ImageView>
-                        <ImageView fx:id="championP1" fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../../blue_champion.png" />
-                           </image>
-                        </ImageView>
-                        <ImageView fx:id="championP2" fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../../blue_champion.png" />
-                           </image>
-                        </ImageView>
-                     </children></VBox>
-                  <VBox fx:id="aiScoreArea" alignment="TOP_CENTER" prefHeight="200.0" prefWidth="175.0" spacing="40.0">
-                     <children>
-                        <Label text="COMP." textFill="WHITE">
-                           <font>
-                              <Font size="24.0" />
-                           </font>
-                        </Label>
-                        <ImageView fx:id="castleA1" fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../../red_castle.png" />
-                           </image>
-                        </ImageView>
-                        <ImageView fx:id="castleA2" fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../../red_castle.png" />
-                           </image>
-                        </ImageView>
-                        <ImageView fx:id="castleA3" fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../../red_castle.png" />
-                           </image>
-                        </ImageView>
-                        <ImageView fx:id="championA1" fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../../red_champion.png" />
-                           </image>
-                        </ImageView>
-                        <ImageView fx:id="championA2" fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../../red_champion.png" />
-                           </image>
-                        </ImageView>
-                     </children>
-                     <padding>
-                        <Insets top="30.0" />
-                     </padding></VBox>
-               </children>
-               <padding>
-                  <Insets left="20.0" right="20.0" />
-               </padding>
-            </HBox>
-         </children>
-      </AnchorPane>
-   </right>
+<BorderPane prefHeight="900.0" prefWidth="1700.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.view.MainGameViewController">
    <center>
-      <AnchorPane prefHeight="800.0" prefWidth="1350.0" BorderPane.alignment="CENTER">
+      <AnchorPane prefHeight="800.0" prefWidth="1700.0" BorderPane.alignment="CENTER">
          <children>
-            <VBox layoutX="625.0" layoutY="300.0" prefHeight="800.0" prefWidth="1350.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <VBox layoutX="625.0" layoutY="300.0" prefHeight="800.0" prefWidth="1700.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <children>
-                  <TilePane fx:id="aiCardDisplay" alignment="CENTER_LEFT" hgap="10.0" prefColumns="9" prefHeight="265.0" prefRows="1" prefTileHeight="180.0" prefTileWidth="100.0" prefWidth="1350.0" vgap="10.0">
+                  <TilePane fx:id="aiCardDisplay" alignment="CENTER_LEFT" hgap="10.0" prefColumns="9" prefHeight="265.0" prefRows="1" prefTileHeight="180.0" prefTileWidth="170.0" prefWidth="1700.0" vgap="10.0">
                      <padding>
                         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                      </padding></TilePane>
-                  <HBox fx:id="deckMessageArea" alignment="CENTER_LEFT" prefHeight="270.0" prefWidth="1350.0" spacing="20.0">
+                  <HBox fx:id="deckMessageArea" alignment="CENTER_LEFT" prefHeight="270.0" prefWidth="1700.0" spacing="20.0">
                      <children>
-                        <HBox fx:id="deckDisplayArea" alignment="CENTER" prefHeight="270.0" prefWidth="1000.0" spacing="60.0">
+                        <HBox fx:id="deckDisplayArea" alignment="CENTER" prefHeight="270.0" prefWidth="700.0" spacing="40.0">
                            <children>
-                              <Label fx:id="message" prefHeight="270.0" prefWidth="600.0" textFill="WHITE" wrapText="true">
+                              <Label fx:id="message" prefHeight="270.0" prefWidth="500.0" textFill="WHITE" wrapText="true">
                                  <font>
                                     <Font size="20.0" />
                                  </font>
@@ -121,15 +36,10 @@
                                  <font>
                                     <Font size="10.0" />
                                  </font></TextArea>
-                              <TextArea fx:id="discardDeckText" editable="false" maxHeight="180.0" maxWidth="100.0" prefHeight="180.0" prefWidth="100.0" wrapText="true">
-                                 <HBox.margin>
-                                    <Insets />
-                                 </HBox.margin>
-                                 <font>
-                                    <Font size="10.0" />
-                                 </font>
-                              </TextArea>
-                           </children></HBox>
+                           </children>
+                           <HBox.margin>
+                              <Insets />
+                           </HBox.margin></HBox>
                         <VBox alignment="CENTER" prefHeight="270.0" prefWidth="150.0" spacing="20.0">
                            <children>
                               <Button fx:id="drawButton" mnemonicParsing="false" onAction="#handleDraw" text="DRAW">
@@ -168,11 +78,79 @@
                               </Button>
                            </children>
                         </VBox>
+                        <VBox prefHeight="270.0" prefWidth="650.0">
+                           <children>
+                              <HBox alignment="CENTER_LEFT" prefHeight="135.0" prefWidth="650.0" spacing="20.0">
+                                 <children>
+                                    <ImageView fx:id="castleA1" fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../../red_castle.png" />
+                                       </image>
+                                    </ImageView>
+                                    <ImageView fx:id="castleA2" fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../../red_castle.png" />
+                                       </image>
+                                    </ImageView>
+                                    <ImageView fx:id="castleA3" fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../../red_castle.png" />
+                                       </image>
+                                    </ImageView>
+                                    <ImageView fx:id="championA1" fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../../red_champion.png" />
+                                       </image>
+                                    </ImageView>
+                                    <ImageView fx:id="championA2" fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../../red_champion.png" />
+                                       </image>
+                                    </ImageView>
+                                 </children>
+                                 <padding>
+                                    <Insets left="20.0" />
+                                 </padding>
+                              </HBox>
+                              <HBox alignment="CENTER_LEFT" prefHeight="135.0" prefWidth="650.0" spacing="20.0">
+                                 <children>
+                                    <ImageView fx:id="castleP1" fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../../blue_castle.png" />
+                                       </image>
+                                    </ImageView>
+                                    <ImageView fx:id="castleP2" fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../../blue_castle.png" />
+                                       </image>
+                                    </ImageView>
+                                    <ImageView fx:id="castleP3" fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../../blue_castle.png" />
+                                       </image>
+                                    </ImageView>
+                                    <ImageView fx:id="championP1" fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../../blue_champion.png" />
+                                       </image>
+                                    </ImageView>
+                                    <ImageView fx:id="championP2" fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../../blue_champion.png" />
+                                       </image>
+                                    </ImageView>
+                                 </children>
+                                 <padding>
+                                    <Insets left="20.0" />
+                                 </padding>
+                              </HBox>
+                           </children>
+                        </VBox>
                      </children>
                      <padding>
                         <Insets left="20.0" right="20.0" />
                      </padding></HBox>
-                  <TilePane fx:id="playerCardDisplay" alignment="CENTER_LEFT" hgap="10.0" prefColumns="9" prefHeight="265.0" prefRows="1" prefTileHeight="180.0" prefTileWidth="100.0" prefWidth="1350.0" vgap="10.0">
+                  <TilePane fx:id="playerCardDisplay" alignment="CENTER_LEFT" hgap="10.0" prefColumns="9" prefHeight="265.0" prefRows="1" prefTileHeight="180.0" prefTileWidth="170.0" prefWidth="1700.0" vgap="10.0">
                      <padding>
                         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                      </padding></TilePane>
@@ -181,4 +159,24 @@
          </children>
       </AnchorPane>
    </center>
+   <top>
+      <Label contentDisplay="TOP" prefHeight="50.0" prefWidth="1700.0" text="OPPONENT'S HAND" textFill="WHITE" BorderPane.alignment="CENTER_LEFT">
+         <font>
+            <Font name="System Bold" size="24.0" />
+         </font>
+         <padding>
+            <Insets left="20.0" />
+         </padding>
+      </Label>
+   </top>
+   <bottom>
+      <Label prefHeight="50.0" prefWidth="1700.0" text="YOUR HAND" textFill="WHITE" BorderPane.alignment="CENTER_LEFT">
+         <font>
+            <Font name="System Bold" size="24.0" />
+         </font>
+         <padding>
+            <Insets left="20.0" />
+         </padding>
+      </Label>
+   </bottom>
 </BorderPane>

@@ -28,14 +28,12 @@ public ArrayList<Card> cards = new ArrayList<Card>();
 				Card card = new Card(unit);
 				cards.add(card);
 				Card.allCards.add(card);
-				//cards.add(new Card(unit));
 			}
 		}
 		for(Event event : Event.values()){
 			Card card = new Card(event);
 			cards.add(card);
 			Card.allCards.add(card);
-			//cards.add(new Card(event));
 		}
 	}
 	

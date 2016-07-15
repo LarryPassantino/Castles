@@ -243,7 +243,8 @@ public class MainGameViewController {
 					needNextRound.set(true);
 				}
 				else{
-					message.setText("Congratulations!\nYou are the winner!!!");
+					message.setText("PLAYER WON THAT ATTACK\n" + Math.max(attackerPower, defenderPower) +
+							"  -  " + Math.min(attackerPower, defenderPower) + "\n\nCongratulations!\nYou are the winner!!!");
 				}
 			}
 			else{
@@ -270,7 +271,8 @@ public class MainGameViewController {
 					needNextRound.set(true);
 				}
 				else{
-					message.setText("Sorry, the computer won this game.\nTry again.");
+					message.setText("COMPUTER WON THAT ATTACK\n" + Math.max(attackerPower, defenderPower) +
+							"  -  " + Math.min(attackerPower, defenderPower) + "\n\nSorry, the computer won this game.\nTry again.");
 				}
 			}
 			else{
@@ -819,9 +821,11 @@ public class MainGameViewController {
 	}
 
 	public void setDeckText(){
-		drawDeckText.setFont(new Font(16.0));
+		/*drawDeckText.setFont(new Font(16.0));
 		discardDeckText.setFont(new Font(16.0));
 		drawDeckText.setText("DECK:\n\n\n" + drawDeck.getDeckSize() + "  CARDS");
-		discardDeckText.setText("DISCARD:\n\n\n" + discardDeck.getDeckSize() + "  CARDS");
+		discardDeckText.setText("DISCARD:\n\n\n" + discardDeck.getDeckSize() + "  CARDS");*/
+		drawDeckText.setFont(new Font(16.0));
+		drawDeckText.setText("DECK:\n" + drawDeck.getDeckSize() + "  CARDS\n\n\nDISCARD:\n" + discardDeck.getDeckSize() + "  CARDS");
 	}
 }
