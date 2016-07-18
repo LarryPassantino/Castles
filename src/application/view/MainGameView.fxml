@@ -40,29 +40,37 @@
                            <HBox.margin>
                               <Insets />
                            </HBox.margin></HBox>
-                        <VBox alignment="CENTER" prefHeight="270.0" prefWidth="150.0" spacing="20.0">
+                        <VBox alignment="CENTER" prefHeight="270.0" prefWidth="150.0" spacing="15.0">
                            <children>
                               <Button fx:id="drawButton" mnemonicParsing="false" onAction="#handleDraw" text="DRAW">
                                  <font>
-                                    <Font name="System Bold" size="16.0" />
+                                    <Font name="System Bold" size="15.0" />
                                  </font>
                               </Button>
                               <Button fx:id="playEventButton" mnemonicParsing="false" onAction="#handlePlayEvent" text="PLAY EVENT">
                                  <font>
-                                    <Font name="System Bold" size="16.0" />
+                                    <Font name="System Bold" size="15.0" />
                                  </font>
                               </Button>
                               <Button fx:id="endTurnButton" mnemonicParsing="false" onAction="#handleEndTurn" text="END TURN">
                                  <font>
-                                    <Font name="System Bold" size="16.0" />
+                                    <Font name="System Bold" size="15.0" />
                                  </font>
                               </Button>
                               <Button fx:id="attackButton" mnemonicParsing="false" onAction="#handleAttack" text="ATTACK">
                                  <font>
-                                    <Font name="System Bold" size="16.0" />
+                                    <Font name="System Bold" size="15.0" />
+                                 </font>
+                              </Button>
+                              <Button fx:id="discardButton" mnemonicParsing="false" onMouseClicked="#handleMaxDiscard" text="DISCARD">
+                                 <font>
+                                    <Font name="System Bold" size="15.0" />
                                  </font>
                               </Button>
                            </children>
+                           <HBox.margin>
+                              <Insets />
+                           </HBox.margin>
                         </VBox>
                         <VBox alignment="CENTER" prefHeight="200.0" prefWidth="150.0" spacing="20.0">
                            <children>

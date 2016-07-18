@@ -1,14 +1,7 @@
 package application.model;
 
 import java.util.ArrayList;
-import java.util.Iterator;
-
 import javafx.scene.Parent;
-import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Font;
-import javafx.scene.text.Text;
 import application.model.Card.Event;
 import application.model.Card.Unit;
 import application.view.MainGameViewController;

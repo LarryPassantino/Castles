@@ -3,6 +3,7 @@ package application.model;
 import java.util.ArrayList;
 
 import javafx.event.EventHandler;
+import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
@@ -127,7 +128,7 @@ public class Card extends GridPane{
 		this.minWidth(170);
 		this.setHeight(180);
 		this.setWidth(170);
-		this.setPadding(new Insets(20,20,0,20));
+		this.setPadding(new Insets(20,0,0,0));
 		
 		cardNameLabel.setFont(new Font(15.0));
 		cardNameLabel.setTextAlignment(TextAlignment.CENTER);
@@ -138,9 +139,15 @@ public class Card extends GridPane{
 		cardDefenseLabel.setAlignment(Pos.CENTER);
 		this.setVgap(33);
 		this.setHgap(60);
+		this.setHalignment(cardNameLabel, HPos.CENTER);
+		this.setHalignment(cardAttackLabel, HPos.RIGHT);
+		this.setHalignment(cardDefenseLabel, HPos.RIGHT);
+		this.setHgrow(cardNameLabel, Priority.ALWAYS);
+		this.setHgrow(cardAttackLabel, Priority.ALWAYS);
+		this.setHgrow(cardDefenseLabel, Priority.ALWAYS);
 		this.add(cardNameLabel, 0, 0, 2, 1);
-		this.add(cardAttackLabel, 1, 1, 1, 1);
-		this.add(cardDefenseLabel, 1, 2, 1, 1);
+		this.add(cardAttackLabel, 0, 1, 1, 1);
+		this.add(cardDefenseLabel, 0, 2, 1, 1);
 		
 		
 		this.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
@@ -173,7 +180,7 @@ public class Card extends GridPane{
 		this.minWidth(170);
 		this.setHeight(180);
 		this.setWidth(170);
-		this.setPadding(new Insets(20,0,25,20));
+		this.setPadding(new Insets(20,20,25,20));
 		
 
 		eventToString = event.toString();
@@ -191,6 +198,9 @@ public class Card extends GridPane{
 		eventResultLabel.setFont(new Font(12.0));
 		eventResultLabel.setAlignment(Pos.CENTER);
 		eventResultLabel.setWrapText(true);
+		eventResultLabel.setPadding(new Insets(0,10,0,0));
+		this.setHalignment(cardNameLabel, HPos.CENTER);
+		this.setHgrow(cardNameLabel, Priority.ALWAYS);
 		this.setHgrow(eventResultLabel, Priority.ALWAYS);
 		this.setVgap(40);
 		this.setHgap(0);
@@ -211,8 +221,6 @@ public class Card extends GridPane{
 		    	}
 		    }
 		});
-		
-		//this.getChildren().add(cardLabel);
 	}
 	
 	public Pane getCardPane(){
@@ -221,8 +229,6 @@ public class Card extends GridPane{
 	
 	public void displayFront(){
 		if(type.equals("event")){
-			/*cardLabel.setText(label);
-			this.setStyle("-fx-background-color: #ffffff");*/
 			cardNameLabel.setVisible(true);
 			eventResultLabel.setVisible(true);
 			setStyle("-fx-background-image: url(event_card_front.png);");
@@ -237,16 +243,15 @@ public class Card extends GridPane{
 	
 	public void displayBack(){
 		if(type.equals("event")){
-			//cardLabel.setText(blank);
 			cardNameLabel.setVisible(false);
 			eventResultLabel.setVisible(false);
-			setStyle("-fx-background-image: url(wide_cardbacks.jpg);"+"-fx-border-color: #ffffff;"+"-fx-border-width: 2;");
+			setStyle("-fx-background-image: url(wide_cardbacks.png);"+"-fx-border-color: #ffffff;"+"-fx-border-width: 2;");
 		}
 		else{
 			cardNameLabel.setVisible(false);
 			cardAttackLabel.setVisible(false);
 			cardDefenseLabel.setVisible(false);
-			setStyle("-fx-background-image: url(wide_cardbacks.jpg);"+"-fx-border-color: #ffffff;"+"-fx-border-width: 2;");
+			setStyle("-fx-background-image: url(wide_cardbacks.png);"+"-fx-border-color: #ffffff;"+"-fx-border-width: 2;");
 		}
 	}
 	
@@ -259,8 +264,6 @@ public class Card extends GridPane{
 				setStyle("-fx-background-image: url(unit_card_front_new.png);"+"-fx-border-color: #8400ff;"+"-fx-border-width: 4;");
 			}
 			else{
-				/*cardLabel.setText(label);
-				setStyle("-fx-background-color: #ffffff;"+"-fx-border-color: #ffc266;"+"-fx-border-width: 5;");*/
 				cardNameLabel.setVisible(true);
 				eventResultLabel.setVisible(true);
 				setStyle("-fx-background-image: url(event_card_front.png);"+"-fx-border-color: #8400ff;"+"-fx-border-width: 4;");
@@ -274,8 +277,6 @@ public class Card extends GridPane{
 				setStyle("-fx-background-image: url(unit_card_front_new.png);");
 			}
 			else{
-				/*cardLabel.setText(label);
-				setStyle("-fx-background-color: #ffffff");*/
 				cardNameLabel.setVisible(true);
 				eventResultLabel.setVisible(true);
 				setStyle("-fx-background-image: url(event_card_front.png);");
@@ -289,7 +290,6 @@ public class Card extends GridPane{
 				setStyle("-fx-background-image: url(unit_card_front_new.png);"+"-fx-border-color: #99ff33;"+"-fx-border-width: 4;");
 			}
 			else{
-				//this.setStyle("-fx-background-color: #ffffff;"+"-fx-border-color: #99ff33;"+"-fx-border-width: 5;");
 				setStyle("-fx-background-image: url(event_card_front.png);"+"-fx-border-color: #99ff33;"+"-fx-border-width: 4;");
 			}
 			isCardSelected = true;
@@ -299,7 +299,6 @@ public class Card extends GridPane{
 				setStyle("-fx-background-image: url(unit_card_front_new.png);");
 			}
 			else{
-				//this.setStyle("-fx-background-color: #ffffff");
 				setStyle("-fx-background-image: url(event_card_front.png);");
 			}
 			isCardSelected = false;

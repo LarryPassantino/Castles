@@ -9,19 +9,11 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
-import javafx.scene.text.Text;
 import application.CastlesMain;
 import application.model.Card;
 import application.model.Deck;
@@ -64,6 +56,8 @@ public class MainGameViewController {
 	@FXML
 	public Button playEventButton;
 	@FXML
+	public Button discardButton;
+	@FXML
 	public Label message = new Label("");
 	@FXML
 	public ImageView castleP1 = new ImageView();
@@ -103,6 +97,8 @@ public class MainGameViewController {
 	private String roundWinner = "";
 	private boolean aiEventPlayed = false;
 	private int messageLifeCounter = 0;
+	private int discardCounter = 0;
+	private boolean skipToEndTurn = false;
 	
 	private SimpleBooleanProperty isPlayerTurn = new SimpleBooleanProperty(true);
 	private SimpleBooleanProperty isGameOver = new SimpleBooleanProperty(false);
@@ -113,6 +109,7 @@ public class MainGameViewController {
 	private SimpleBooleanProperty canEndTurn = new SimpleBooleanProperty(false);
 	private SimpleBooleanProperty eventCardPlayed = new SimpleBooleanProperty(false);
 	private SimpleBooleanProperty hasEventCard = new SimpleBooleanProperty(false);
+	private SimpleBooleanProperty canDiscard = new SimpleBooleanProperty(false);
 
 	public MainGameViewController(){
 		aiHand = new Hand(aiCardDisplay.getChildren());
@@ -132,6 +129,7 @@ public class MainGameViewController {
         nextRoundButton.disableProperty().bind(needNextRound.not());
         BooleanBinding eventBinding = hasEventCard.not().or(eventCardPlayed);
         playEventButton.disableProperty().bind(eventBinding);
+        discardButton.disableProperty().bind(canDiscard.not());
 	}
 	
 	@FXML
@@ -144,10 +142,12 @@ public class MainGameViewController {
 		canEndTurn.set(false);
 		eventCardPlayed.set(false);
 		hasEventCard.set(false);
-		if(isPlayerTurn.get() == true){
+		if(isPlayerTurn.get()){
 			if(playerHand.handSizeProperty().get() > 7){
-				handleAttack();
-				maxAttack.set(true);
+				message.setText("TOO MANY CARDS. DISCARD TWO OR ATTACK NOW.\nIF DISCARDING, SELECT YOUR FIRST CARD TO DISCARD.");
+				canDiscard.set(true);
+				canAttack.set(true);
+				canEndTurn.set(false);
 			}
 			else{
 				isPlayerTurn.set(false);
@@ -160,7 +160,7 @@ public class MainGameViewController {
 					eventCard.selectable = true;
 					eventCard.isCardSelected = true;
 					handlePlayEvent();
-					if(eventCard.resultCode.equals("newC")){
+					if(eventCard.resultCode.equals("newC") && aiHand.handSizeProperty().get() > 0){
 						Card tradeCard = selectCardToTradeIn();
 						tradeCard.isCardSelected = true;
 						handlePlayEvent();
@@ -176,8 +176,7 @@ public class MainGameViewController {
 					canAttack.set(false);
 				}
 			}
-			if(!maxAttack.get()){
-				//message.setText("COMPUTER'S TURN");
+			if(!isPlayerTurn.get()){
 				if(canAttack.get() && aiHand.numAttackersProperty().get() > 6 && aiHand.attackValueProperty().get() > 20){
 					handleAttack();
 				}
@@ -188,14 +187,32 @@ public class MainGameViewController {
 					handleAttack();
 				}
 				else{
-					handleEndTurn();
+					skipToEndTurn = true;
 				}
+			}
+			if(skipToEndTurn){
+				skipToEndTurn = false;
+				handleEndTurn();
 			}
 		}
 		else{
 			if(aiHand.handSizeProperty().get() > 7){
-				handleAttack();
-				maxAttack.set(true);
+				if(aiHand.numAttackersProperty().get() > 6 && aiHand.attackValueProperty().get() > 20){
+					handleAttack();
+				}
+				else if(aiHand.numAttackersProperty().get() > 4 && aiHand.attackValueProperty().get() > 12){
+					handleAttack();
+				}
+				else if(aiHand.numAttackersProperty().get() == 4 && aiHand.attackValueProperty().get() > 10){
+					handleAttack();
+				}
+				else{
+					handleMaxDiscard();
+					handleMaxDiscard();
+					message.setText("YOUR OPPONENT DISCARDED TWO CARDS INSTEAD OF BEING FORCED TO ATTACK.");
+					messageLifeCounter = 1;
+					skipToEndTurn = true;
+				}
 			}
 			else{
 				isPlayerTurn.set(true);
@@ -208,9 +225,10 @@ public class MainGameViewController {
 					canAttack.set(false);
 				}
 			}
-			/*if(!maxAttack.get()){
-				//message.setText("PLAYER'S TURN\nDRAW A CARD");
-			}*/
+			if(skipToEndTurn){
+				skipToEndTurn = false;
+				handleEndTurn();
+			}
 		}
 	}
 	
@@ -238,12 +256,12 @@ public class MainGameViewController {
 				removeCastle("ai");
 				removeChampions("ai");
 				if(!isGameOver.get()){
-					message.setText("PLAYER WON THAT ATTACK\n" + Math.max(attackerPower, defenderPower) +
-							"  -  " + Math.min(attackerPower, defenderPower) + "\nCOMPUTER LOSES A CASTLE\n\nPLAYER'S TURN");
+					message.setText("YOU WON THAT ATTACK\n" + Math.max(attackerPower, defenderPower) +
+							"  -  " + Math.min(attackerPower, defenderPower) + "\nYOUR OPPONENT LOSES A CASTLE\n\nYOUR TURN");
 					needNextRound.set(true);
 				}
 				else{
-					message.setText("PLAYER WON THAT ATTACK\n" + Math.max(attackerPower, defenderPower) +
+					message.setText("YOU WON THAT ATTACK\n" + Math.max(attackerPower, defenderPower) +
 							"  -  " + Math.min(attackerPower, defenderPower) + "\n\nCongratulations!\nYou are the winner!!!");
 				}
 			}
@@ -251,8 +269,12 @@ public class MainGameViewController {
 				roundWinner = "ai";
 				addChampion("ai");
 				removeChampions("player");
-				message.setText("COMPUTER SUCESSFULLY DEFENDED\n" + Math.max(attackerPower, defenderPower) +
-						"  -  " + Math.min(attackerPower, defenderPower) + "\nCOMPUTER EARNS A CHAMPION\n\nCOMPUTER'S TURN");
+				String champText = "";
+				if(!championA2.isVisible()){
+					champText = "\nYOUR OPPONENT EARNS A CHAMPION";
+				}
+				message.setText("YOUR OPPONENT SUCESSFULLY DEFENDED\n" + Math.max(attackerPower, defenderPower) +
+						"  -  " + Math.min(attackerPower, defenderPower) + champText + "\n\nOPPONENT'S TURN");
 				needNextRound.set(true);
 			}
 		}
@@ -266,23 +288,57 @@ public class MainGameViewController {
 				roundWinner = "ai";
 				removeChampions("player");
 				if(!isGameOver.get()){
-					message.setText("COMPUTER WON THAT ATTACK\n" + Math.max(attackerPower, defenderPower) +
-							"  -  " + Math.min(attackerPower, defenderPower) + "\nPLAYER LOSES A CASTLE\n\nCOMPUTER'S TURN");
+					message.setText("YOUR OPPONENT WON THAT ATTACK\n" + Math.max(attackerPower, defenderPower) +
+							"  -  " + Math.min(attackerPower, defenderPower) + "\nYOU LOSE A CASTLE\n\nOPPONENT'S TURN");
 					needNextRound.set(true);
 				}
 				else{
-					message.setText("COMPUTER WON THAT ATTACK\n" + Math.max(attackerPower, defenderPower) +
-							"  -  " + Math.min(attackerPower, defenderPower) + "\n\nSorry, the computer won this game.\nTry again.");
+					message.setText("YOUR OPPONENT WON THAT ATTACK\n" + Math.max(attackerPower, defenderPower) +
+							"  -  " + Math.min(attackerPower, defenderPower) + "\n\nSorry, you lost this game.\nTry again.");
 				}
 			}
 			else{
 				roundWinner = "player";
 				addChampion("player");
 				removeChampions("ai");
-				message.setText("PLAYER SUCESSFULLY DEFENDED\n" + Math.max(attackerPower, defenderPower) +
-						"  -  " + Math.min(attackerPower, defenderPower) + "\nPLAYER EARNS A CHAMPION\n\nPLAYER'S TURN");
+				String champText = "";
+				if(!championP2.isVisible()){
+					champText = "\nYOU EARN A CHAMPION";
+				}
+				message.setText("YOU SUCESSFULLY DEFENDED\n" + Math.max(attackerPower, defenderPower) +
+						"  -  " + Math.min(attackerPower, defenderPower) + champText + "\n\nYOUR TURN");
 				needNextRound.set(true);
 			}
+		}
+	}
+	
+	@FXML
+	public void handleMaxDiscard(){
+		discardCounter++;
+		canAttack.set(false);
+		if(discardCounter == 1){
+			message.setText("NOW SELECT YOUR SECOND CARD TO DISCARD.");
+		}
+		else if(discardCounter > 1){
+			canDiscard.set(false);
+			discardCounter = 0;
+			canEndTurn.set(true);
+		}
+		if(isPlayerTurn.get()){
+			ArrayList<Card> tempHandList = playerHand.getHandList();
+			for (Card card : tempHandList) {
+				if(card.isCardSelected){
+					discardCard(card);
+					discardDeck.addDiscardedCards(card);
+					setDeckText();
+					//break;
+				}
+			}
+		}
+		else{
+			Card card = selectCardToTradeIn();
+			discardCard(card);
+			discardDeck.addDiscardedCards(card);
 		}
 	}
 	
@@ -312,7 +368,7 @@ public class MainGameViewController {
 		setDeckText();
 		isGameOver.set(false);
 		setDeckText();
-		message.setText("PLAYER'S TURN\nDRAW A CARD");
+		message.setText("YOU START THE GAME\nDRAW A CARD");
 	}
 	
 	public void handleDraw(){
@@ -324,6 +380,7 @@ public class MainGameViewController {
 			else{
 				message.setText("You have at least one event and must play one this turn.");
 				hasEventCard.set(true);
+				canAttack.set(false);
 			}
 			canDraw.set(false);
 			if(playerHand.numAttackersProperty().get() > 3){
@@ -400,7 +457,7 @@ public class MainGameViewController {
 							discardDeck.addDiscardedCards(aiCard);
 						}
 						setDeckText();
-						message.setText("EACH PLAYER DISCARDED A RANDOM CARD IF ANY.");
+						message.setText("EACH PLAYER DISCARDED A RANDOM CARD.");
 						messageLifeCounter=1;
 					}
 					//draw 2
@@ -548,16 +605,16 @@ public class MainGameViewController {
 						aiHand.takeCard(drawDeck.drawCard(false));
 						message.setText("YOUR OPPONENT TRADED A CHOSEN CARD FOR A NEW CARD.");
 					}
+					messageLifeCounter=1;
+					eventCardPlayed.set(true);
+					hasEventCard.set(false);
+					canEndTurn.set(true);
+					playEventButton.setText("PLAY EVENT");
+					if((isPlayerTurn.get() && playerHand.numAttackersProperty().get() > 3) ||
+							(!isPlayerTurn.get() && aiHand.numAttackersProperty().get() > 3)){
+						canAttack.set(true);
+					}
 				}
-			}
-			messageLifeCounter=1;
-			eventCardPlayed.set(true);
-			hasEventCard.set(false);
-			canEndTurn.set(true);
-			playEventButton.setText("PLAY EVENT");
-			if((isPlayerTurn.get() && playerHand.numAttackersProperty().get() > 3) ||
-					(!isPlayerTurn.get() && aiHand.numAttackersProperty().get() > 3)){
-				canAttack.set(true);
 			}
 		}
 	}
@@ -858,10 +915,6 @@ public class MainGameViewController {
 	}
 
 	public void setDeckText(){
-		/*drawDeckText.setFont(new Font(16.0));
-		discardDeckText.setFont(new Font(16.0));
-		drawDeckText.setText("DECK:\n\n\n" + drawDeck.getDeckSize() + "  CARDS");
-		discardDeckText.setText("DISCARD:\n\n\n" + discardDeck.getDeckSize() + "  CARDS");*/
 		drawDeckText.setFont(new Font(16.0));
 		drawDeckText.setText("DECK:\n" + drawDeck.getDeckSize() + "  CARDS\n\n\nDISCARD:\n" + discardDeck.getDeckSize() + "  CARDS");
 	}
