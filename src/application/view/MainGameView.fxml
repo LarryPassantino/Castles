@@ -84,6 +84,11 @@
                                     <Font name="System Bold" size="16.0" />
                                  </font>
                               </Button>
+                              <Button fx:id="helpButton" mnemonicParsing="false" onMouseClicked="#handleHelp" text="HOW TO PLAY">
+                                 <font>
+                                    <Font name="System Bold" size="14.0" />
+                                 </font>
+                              </Button>
                            </children>
                         </VBox>
                         <VBox prefHeight="270.0" prefWidth="650.0">
@@ -167,16 +172,6 @@
          </children>
       </AnchorPane>
    </center>
-   <top>
-      <Label contentDisplay="TOP" prefHeight="50.0" prefWidth="1700.0" text="OPPONENT'S HAND" textFill="WHITE" BorderPane.alignment="CENTER_LEFT">
-         <font>
-            <Font name="System Bold" size="24.0" />
-         </font>
-         <padding>
-            <Insets left="20.0" />
-         </padding>
-      </Label>
-   </top>
    <bottom>
       <Label prefHeight="50.0" prefWidth="1700.0" text="YOUR HAND" textFill="WHITE" BorderPane.alignment="CENTER_LEFT">
          <font>
@@ -187,4 +182,21 @@
          </padding>
       </Label>
    </bottom>
+   <top>
+      <HBox prefHeight="50.0" prefWidth="1700.0" BorderPane.alignment="CENTER">
+         <children>
+            <Label prefHeight="50.0" prefWidth="1700.0" text="OPPONENT'S HAND" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="24.0" />
+               </font>
+               <padding>
+                  <Insets left="20.0" />
+               </padding>
+            </Label>
+         </children>
+         <padding>
+            <Insets right="20.0" top="10.0" />
+         </padding>
+      </HBox>
+   </top>
 </BorderPane>

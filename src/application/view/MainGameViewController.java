@@ -9,6 +9,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
@@ -57,6 +58,8 @@ public class MainGameViewController {
 	public Button playEventButton;
 	@FXML
 	public Button discardButton;
+	@FXML
+	public Button helpButton = new Button();
 	@FXML
 	public Label message = new Label("");
 	@FXML
@@ -112,8 +115,13 @@ public class MainGameViewController {
 	private SimpleBooleanProperty canDiscard = new SimpleBooleanProperty(false);
 
 	public MainGameViewController(){
+		
+	}
+	
+	public void setComponents(){
 		aiHand = new Hand(aiCardDisplay.getChildren());
         playerHand = new Hand(playerCardDisplay.getChildren());
+        helpButton.setStyle("-fx-background-color: #dfc370;"+"-fx-border-radius: 10;"+"-fx-background-radius: 10;");
 	}
 	
 	public void setMainGame(CastlesMain main) {
@@ -917,5 +925,10 @@ public class MainGameViewController {
 	public void setDeckText(){
 		drawDeckText.setFont(new Font(16.0));
 		drawDeckText.setText("DECK:\n" + drawDeck.getDeckSize() + "  CARDS\n\n\nDISCARD:\n" + discardDeck.getDeckSize() + "  CARDS");
+	}
+	
+	public void handleHelp(){
+		main.getPopupStage().showAndWait();
+		
 	}
 }
