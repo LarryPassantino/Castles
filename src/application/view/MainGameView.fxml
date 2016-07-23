@@ -3,7 +3,6 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -27,15 +26,15 @@
                      <children>
                         <HBox fx:id="deckDisplayArea" alignment="CENTER" prefHeight="270.0" prefWidth="700.0" spacing="40.0">
                            <children>
-                              <Label fx:id="message" prefHeight="270.0" prefWidth="500.0" textFill="WHITE" wrapText="true">
+                              <Label fx:id="message" prefHeight="270.0" prefWidth="500.0" textFill="#ffeeaa" wrapText="true">
                                  <font>
                                     <Font size="20.0" />
                                  </font>
                               </Label>
-                              <TextArea fx:id="drawDeckText" editable="false" maxHeight="180.0" maxWidth="100.0" prefHeight="180.0" prefWidth="100.0" wrapText="true">
+                              <Label fx:id="deckTextLabel" prefHeight="180.0" prefWidth="120.0" textAlignment="CENTER" textFill="#ffeeaa">
                                  <font>
-                                    <Font size="10.0" />
-                                 </font></TextArea>
+                                    <Font size="16.0" />
+                                 </font></Label>
                            </children>
                            <HBox.margin>
                               <Insets />
@@ -84,7 +83,7 @@
                                     <Font name="System Bold" size="16.0" />
                                  </font>
                               </Button>
-                              <Button fx:id="helpButton" mnemonicParsing="false" onMouseClicked="#handleHelp" text="HOW TO PLAY">
+                              <Button fx:id="helpButton" mnemonicParsing="false" onMouseClicked="#handleHelp" text="HOW TO PLAY" textFill="WHITE">
                                  <font>
                                     <Font name="System Bold" size="14.0" />
                                  </font>
@@ -173,7 +172,7 @@
       </AnchorPane>
    </center>
    <bottom>
-      <Label prefHeight="50.0" prefWidth="1700.0" text="YOUR HAND" textFill="WHITE" BorderPane.alignment="CENTER_LEFT">
+      <Label prefHeight="50.0" prefWidth="1700.0" text="YOUR HAND" textFill="#ffeeaa" BorderPane.alignment="CENTER_LEFT">
          <font>
             <Font name="System Bold" size="24.0" />
          </font>
@@ -185,9 +184,9 @@
    <top>
       <HBox prefHeight="50.0" prefWidth="1700.0" BorderPane.alignment="CENTER">
          <children>
-            <Label prefHeight="50.0" prefWidth="1700.0" text="OPPONENT'S HAND" textFill="WHITE">
+            <Label prefHeight="50.0" prefWidth="1700.0" text="OPPONENT'S HAND" textFill="#ffeeaa">
                <font>
-                  <Font name="System Bold" size="24.0" />
+                  <Font name="Eras Bold ITC" size="24.0" />
                </font>
                <padding>
                   <Insets left="20.0" />

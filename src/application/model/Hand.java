@@ -68,7 +68,10 @@ public class Hand {
 		for (Node card : hand) {
 			Card thisCard = (Card) card;
 			if(thisCard.attack > 0){
-				thisCard.highlightCard(true);;
+				thisCard.highlightCard(true);
+			}
+			else{
+				thisCard.highlightCard(false);
 			}
 		}
 	}
@@ -77,7 +80,10 @@ public class Hand {
 		for (Node card : hand) {
 			Card thisCard = (Card) card;
 			if(thisCard.defense > 0){
-				thisCard.highlightCard(true);;
+				thisCard.highlightCard(true);
+			}
+			else{
+				thisCard.highlightCard(false);
 			}
 		}
 	}

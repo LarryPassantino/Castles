@@ -29,7 +29,7 @@ public class HowToWindowViewController {
 				"1. Draw a card.\n2. Play an EVENT if you have one.\n3. End your turn in some way:\n" +
 				"\t\ta. Decide to take no action and end your turn.\n\t\tb. Attack your opponent, if possible.\n\t\t" +
 				"c. Discard two cards if required and end your turn.";
-		String overviewText = "Castle Seige is a game about attacking and defending castles. " +
+		String overviewText = "Castles is a game about attacking and defending castles. " +
 				"You draw cards that are better at attack, defense or both and use these in an effort to " +
 				"take your opponent's castles. Be watchful though, your opponent is trying to do the same. " +
 				"Choose the correct army for a successful seige and win the rights to the kingdom!";

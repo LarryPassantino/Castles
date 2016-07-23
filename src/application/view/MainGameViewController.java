@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
@@ -89,7 +90,7 @@ public class MainGameViewController {
 	@FXML
 	public TextArea drawDeckText = new TextArea("");
 	@FXML
-	public TextArea discardDeckText = new TextArea("");
+	public Label deckTextLabel = new Label("");
 	
 	private int numPlayerChampions, numAIChampions;
 	private String attacker;
@@ -121,7 +122,20 @@ public class MainGameViewController {
 	public void setComponents(){
 		aiHand = new Hand(aiCardDisplay.getChildren());
         playerHand = new Hand(playerCardDisplay.getChildren());
+
+        attackButton.setStyle("-fx-background-color: #ffeeaa;"+"-fx-border-radius: 10;"+"-fx-background-radius: 10;");
+        endTurnButton.setStyle("-fx-background-color: #ffeeaa;"+"-fx-border-radius: 10;"+"-fx-background-radius: 10;");
+        newGameButton.setStyle("-fx-background-color: #ffeeaa;"+"-fx-border-radius: 10;"+"-fx-background-radius: 10;");
+        nextRoundButton.setStyle("-fx-background-color: #ffeeaa;"+"-fx-border-radius: 10;"+"-fx-background-radius: 10;");
+        drawButton.setStyle("-fx-background-color: #ffeeaa;"+"-fx-border-radius: 10;"+"-fx-background-radius: 10;");
+        playEventButton.setStyle("-fx-background-color: #ffeeaa;"+"-fx-border-radius: 10;"+"-fx-background-radius: 10;");
+        discardButton.setStyle("-fx-background-color: #ffeeaa;"+"-fx-border-radius: 10;"+"-fx-background-radius: 10;");        
         helpButton.setStyle("-fx-background-color: #dfc370;"+"-fx-border-radius: 10;"+"-fx-background-radius: 10;");
+        message.setFont(new Font("Eras Medium ITC",20.0));
+        deckTextLabel.setStyle("-fx-background-color: #ffffff00;"+"-fx-border-radius: 10;"+"-fx-background-radius: 10;"+
+        		"-fx-border-color: #ffeeaa;"+"-fx-border-width: 4;");
+        deckTextLabel.setAlignment(Pos.CENTER);
+        deckTextLabel.setFont(new Font("Eras Bold ITC",16.0));
 	}
 	
 	public void setMainGame(CastlesMain main) {
@@ -147,6 +161,8 @@ public class MainGameViewController {
 			messageLifeCounter=0;
 			message.setText("");
 		}
+		canAttack.set(false);
+		canDiscard.set(false);
 		canEndTurn.set(false);
 		eventCardPlayed.set(false);
 		hasEventCard.set(false);
@@ -271,6 +287,8 @@ public class MainGameViewController {
 				else{
 					message.setText("YOU WON THAT ATTACK\n" + Math.max(attackerPower, defenderPower) +
 							"  -  " + Math.min(attackerPower, defenderPower) + "\n\nCongratulations!\nYou are the winner!!!");
+
+					main.getResultsStage("win").showAndWait();
 				}
 			}
 			else{
@@ -303,6 +321,8 @@ public class MainGameViewController {
 				else{
 					message.setText("YOUR OPPONENT WON THAT ATTACK\n" + Math.max(attackerPower, defenderPower) +
 							"  -  " + Math.min(attackerPower, defenderPower) + "\n\nSorry, you lost this game.\nTry again.");
+					
+					main.getResultsStage("lose").showAndWait();
 				}
 			}
 			else{
@@ -337,7 +357,7 @@ public class MainGameViewController {
 			for (Card card : tempHandList) {
 				if(card.isCardSelected){
 					discardCard(card);
-					discardDeck.addDiscardedCards(card);
+					//discardDeck.addDiscardedCards(card);
 					setDeckText();
 					//break;
 				}
@@ -346,7 +366,7 @@ public class MainGameViewController {
 		else{
 			Card card = selectCardToTradeIn();
 			discardCard(card);
-			discardDeck.addDiscardedCards(card);
+			//discardDeck.addDiscardedCards(card);
 		}
 	}
 	
@@ -382,6 +402,7 @@ public class MainGameViewController {
 	public void handleDraw(){
 		if(isPlayerTurn.get()){
 			playerHand.takeCard(drawDeck.drawCard(true));
+			setDeckText();
 			if (!checkForEvent() || eventCardPlayed.get()) {
 				canEndTurn.set(true);
 			}
@@ -402,6 +423,7 @@ public class MainGameViewController {
 		}
 		else{
 			aiHand.takeCard(drawDeck.drawCard(false));
+			setDeckText();
 		}
 	}
 	
@@ -422,13 +444,14 @@ public class MainGameViewController {
 					//discard 1
 					if (card.resultCode.equals("dis1")) {
 						discardCard(card);
-						discardDeck.addDiscardedCards(card);
+						//discardDeck.addDiscardedCards(card);
 						Card tempCard;
 						if(isPlayerTurn.get()){
 							if(playerHand.handSizeProperty().get() > 0){
 								tempCard = playerHand.getRandomCard();
-								playerHand.removeCard(tempCard);
-								discardDeck.addDiscardedCards(tempCard);
+								/*playerHand.removeCard(tempCard);
+								discardDeck.addDiscardedCards(tempCard);*/
+								discardCard(tempCard);
 								message.setText("YOU DISCARDED A RANDOM CARD.");
 							}
 							else{
@@ -438,8 +461,9 @@ public class MainGameViewController {
 						else{
 							if(playerHand.handSizeProperty().get() > 0){
 								tempCard = aiHand.getRandomCard();
-								aiHand.removeCard(tempCard);
-								discardDeck.addDiscardedCards(tempCard);
+								/*aiHand.removeCard(tempCard);
+								discardDeck.addDiscardedCards(tempCard);*/
+								discardCard(tempCard);
 								message.setText("YOUR OPPONENT DISCARDED A RANDOM CARD.");
 							}
 							else{
@@ -452,7 +476,7 @@ public class MainGameViewController {
 					//each discard 1
 					else if (card.resultCode.equals("bothdis1")) {
 						discardCard(card);
-						discardDeck.addDiscardedCards(card);
+						//discardDeck.addDiscardedCards(card);
 						if (playerHand.handSizeProperty().get() > 0) {
 							Card plCard = playerHand.getRandomCard();
 							playerHand.removeCard(plCard);
@@ -486,7 +510,7 @@ public class MainGameViewController {
 					//get new card
 					else if (card.resultCode.equals("newC")) {
 						discardCard(card);
-						discardDeck.addDiscardedCards(card);
+						//discardDeck.addDiscardedCards(card);
 						if(isPlayerTurn.get() && playerHand.handSizeProperty().get() > 0){
 							message.setText("SELECT A CARD TO TRADE IN FOR A NEW CARD.");
 							playEventButton.setText("TRADE");
@@ -506,7 +530,8 @@ public class MainGameViewController {
 							playerHandList = playerHand.getHandList();
 							int cardsInHand = playerHand.handSizeProperty().get();
 							for (Card handCard : playerHandList) {
-								playerHand.removeCard(handCard);
+								//playerHand.removeCard(handCard);
+								discardCard(handCard);
 							}
 							playerHandList.clear();
 							playerHand = new Hand(playerCardDisplay.getChildren());
@@ -524,7 +549,8 @@ public class MainGameViewController {
 							aiHandList = aiHand.getHandList();
 							int cardsInHand = aiHand.handSizeProperty().get();
 							for (Card handCard : aiHandList) {
-								aiHand.removeCard(handCard);
+								//aiHand.removeCard(handCard);
+								discardCard(handCard);
 							}
 							aiHandList.clear();
 							aiHand = new Hand(aiCardDisplay.getChildren());
@@ -543,26 +569,33 @@ public class MainGameViewController {
 					//trade 1 with opponent//////////////////////////////////////////////////////////////////////////////////////////
 					else if (card.resultCode.equals("trade1")) {
 						discardCard(card);
-						Card playerCard = playerHand.getRandomCard();
-						Card aiCard = aiHand.getRandomCard();
-						playerCard.selectable = false;
-						playerCard.displayBack();
-						aiCard.selectable = true;
-						aiCard.displayFront();
-						playerHand.removeCard(playerCard);
-						playerHand.takeCard(aiCard);
-						aiHand.removeCard(aiCard);
-						aiHand.takeCard(playerCard);
-						message.setText("YOU AND YOUR OPPONENT TRADED A RANDOM CARD.");
+						if (playerHand.handSizeProperty().get() > 0 && aiHand.handSizeProperty().get() > 0) {
+							Card playerCard = playerHand.getRandomCard();
+							Card aiCard = aiHand.getRandomCard();
+							playerCard.selectable = false;
+							playerCard.displayBack();
+							aiCard.selectable = true;
+							aiCard.displayFront();
+							playerHand.removeCard(playerCard);
+							playerHand.takeCard(aiCard);
+							aiHand.removeCard(aiCard);
+							aiHand.takeCard(playerCard);
+							message.setText("YOU AND YOUR OPPONENT TRADED A RANDOM CARD.");
+						}
+						else{
+							message.setText("PLAYERS COULD NOT TADE CARDS BECAUSE AT LEAST ONE HAND WAS EMPTY.");
+						}
 						messageLifeCounter=1;
 					} 
 					//opponent discard 1
 					else if (card.resultCode.equals("oppdis1")) {
 						discardCard(card);
-						discardDeck.addDiscardedCards(card);
+						//discardDeck.addDiscardedCards(card);
 						if(isPlayerTurn.get()){
 							if (aiHand.handSizeProperty().get() > 0) {
-								aiHand.removeCard(aiHand.getRandomCard());
+								Card discard = aiHand.getRandomCard();
+								aiHand.removeCard(discard);
+								discardDeck.addDiscardedCards(discard);
 								message.setText("YOUR OPPONENT DISCARDED A RANDOM CARD.");
 							}
 							else{
@@ -571,8 +604,9 @@ public class MainGameViewController {
 						}
 						else{
 							if (playerHand.handSizeProperty().get() > 0) {
-								playerHand.removeCard(playerHand
-										.getRandomCard());
+								Card discard = playerHand.getRandomCard();
+								playerHand.removeCard(discard);
+								discardDeck.addDiscardedCards(discard);
 								message.setText("YOUR OPPONENT MADE YOU DISCARD A RANDOM CARD.");
 							}
 							else{
@@ -604,12 +638,14 @@ public class MainGameViewController {
 				if (card.isCardSelected) {
 					if(isPlayerTurn.get()){
 						card.highlightCardOnClick(true);
-						playerHand.removeCard(card);
+						//playerHand.removeCard(card);
+						discardCard(card);
 						playerHand.takeCard(drawDeck.drawCard(true));
 						message.setText("YOU TRADED A CHOSEN CARD FOR A NEW CARD.");
 					}
 					else{
-						aiHand.removeCard(card);
+						//aiHand.removeCard(card);
+						discardCard(card);
 						aiHand.takeCard(drawDeck.drawCard(false));
 						message.setText("YOUR OPPONENT TRADED A CHOSEN CARD FOR A NEW CARD.");
 					}
@@ -925,6 +961,7 @@ public class MainGameViewController {
 	public void setDeckText(){
 		drawDeckText.setFont(new Font(16.0));
 		drawDeckText.setText("DECK:\n" + drawDeck.getDeckSize() + "  CARDS\n\n\nDISCARD:\n" + discardDeck.getDeckSize() + "  CARDS");
+		deckTextLabel.setText("DECK:\n" + drawDeck.getDeckSize() + "  CARDS\n\n\nDISCARD:\n" + discardDeck.getDeckSize() + "  CARDS");
 	}
 	
 	public void handleHelp(){

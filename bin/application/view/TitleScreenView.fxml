@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+
+<AnchorPane prefHeight="900.0" prefWidth="1700.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.60" fx:controller="application.view.TitleScreenViewController">
+   <children>
+      <ImageView fitHeight="900.0" fitWidth="1700.0" layoutX="750.0" layoutY="375.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <image>
+            <Image url="@../../TitleScreen.png" />
+         </image>
+      </ImageView>
+      <Button fx:id="startGameButton" layoutX="800.0" layoutY="624.0" mnemonicParsing="false" onMouseClicked="#handleStartGame" text="START" textFill="#dfc370">
+         <font>
+            <Font name="Eras Bold ITC" size="24.0" />
+         </font>
+      </Button>
+      <Button fx:id="startGameWithHelpButton" layoutX="682.0" layoutY="725.0" mnemonicParsing="false" onMouseClicked="#handleStartGameWithHelp" text="START: WITH INSTUCTIONS" textFill="#dfc370" AnchorPane.bottomAnchor="131.0">
+         <font>
+            <Font name="Eras Bold ITC" size="24.0" />
+         </font>
+      </Button>
+   </children>
+</AnchorPane>

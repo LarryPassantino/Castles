@@ -6,36 +6,24 @@ import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Parent;
-import javafx.scene.control.Control;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.BackgroundImage;
-import javafx.scene.layout.BackgroundPosition;
-import javafx.scene.layout.BackgroundRepeat;
-import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
-import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 
 public class Card extends GridPane{
 	
-	public final static String DISCARD_ONE = "discard one random card";
-	public final static String EACH_DISCARD_ONE = "each player discards one random card";
-	public final static String DRAW_TWO = "draw two cards";
-	public final static String NEW_CARD = "trade card of choosing for new card";
-	public final static String NEW_HAND = "discard hand and draw new hand of same size";
-	public final static String OPPONENT_DISCARD_ONE = "opponent discards one random card";
-	public final static String TRADE_ONE = "trade one random card with opponent";
+	public final static String DISCARD_ONE = "Discard One Random Card";
+	public final static String EACH_DISCARD_ONE = "Each Player Discards One Random Card";
+	public final static String DRAW_TWO = "Draw Two Cards";
+	public final static String NEW_CARD = "Trade Card Of Choosing For New Card";
+	public final static String NEW_HAND = "Discard Hand And Draw New Hand Of Same Size";
+	public final static String OPPONENT_DISCARD_ONE = "Opponent Discards One Random Card";
+	public final static String TRADE_ONE = "Trade One Random Card With Opponent";
 	
 	public final static ArrayList<Card> allCards = new ArrayList<Card>();
 	
@@ -91,6 +79,7 @@ public class Card extends GridPane{
 	public Label cardDefenseLabel = new Label("");
 	public String unitToString;
 	public Label eventResultLabel = new Label("");
+	public Text eventResultText = new Text("");
 	public String eventToString;
 	
 	public Card() {
@@ -128,16 +117,16 @@ public class Card extends GridPane{
 		this.minWidth(170);
 		this.setHeight(180);
 		this.setWidth(170);
-		this.setPadding(new Insets(20,0,0,0));
+		this.setPadding(new Insets(25,0,0,0));
 		
-		cardNameLabel.setFont(new Font(15.0));
+		cardNameLabel.setFont(new Font("Eras Bold ITC",15.0));
 		cardNameLabel.setTextAlignment(TextAlignment.CENTER);
 		cardNameLabel.setAlignment(Pos.CENTER);
-		cardAttackLabel.setFont(new Font(20.0));
+		cardAttackLabel.setFont(new Font("Eras Bold ITC",20.0));
 		cardAttackLabel.setAlignment(Pos.CENTER);
-		cardDefenseLabel.setFont(new Font(20.0));
+		cardDefenseLabel.setFont(new Font("Eras Bold ITC",20.0));
 		cardDefenseLabel.setAlignment(Pos.CENTER);
-		this.setVgap(33);
+		this.setVgap(36);
 		this.setHgap(60);
 		this.setHalignment(cardNameLabel, HPos.CENTER);
 		this.setHalignment(cardAttackLabel, HPos.RIGHT);
@@ -192,20 +181,25 @@ public class Card extends GridPane{
 		cardNameLabel.setText(cardName);
 		eventResultLabel.setText(eventResult);
 		
-		cardNameLabel.setFont(new Font(15.0));
+		cardNameLabel.setFont(new Font("Eras Bold ITC",15.0));
 		cardNameLabel.setTextAlignment(TextAlignment.CENTER);
 		cardNameLabel.setAlignment(Pos.CENTER);
 		eventResultLabel.setFont(new Font(12.0));
 		eventResultLabel.setAlignment(Pos.CENTER);
 		eventResultLabel.setWrapText(true);
-		eventResultLabel.setPadding(new Insets(0,10,0,0));
+		eventResultLabel.setPadding(new Insets(10,10,0,0));
+		eventResultText.setFont(new Font("Eras Medium ITC",15.0));
+		eventResultText.setText(eventResult);
+		eventResultText.setTextAlignment(TextAlignment.CENTER);
+		eventResultText.setWrappingWidth(120);
 		this.setHalignment(cardNameLabel, HPos.CENTER);
 		this.setHgrow(cardNameLabel, Priority.ALWAYS);
 		this.setHgrow(eventResultLabel, Priority.ALWAYS);
-		this.setVgap(40);
+		this.setVgap(50);
 		this.setHgap(0);
 		this.add(cardNameLabel, 0, 0, 1, 1);
-		this.add(eventResultLabel, 0, 1, 1, 1);
+		//this.add(eventResultLabel, 0, 1, 1, 1);
+		this.add(eventResultText, 0, 1, 1, 1);
 		
 		
 		this.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
@@ -231,6 +225,7 @@ public class Card extends GridPane{
 		if(type.equals("event")){
 			cardNameLabel.setVisible(true);
 			eventResultLabel.setVisible(true);
+			eventResultText.setVisible(true);
 			setStyle("-fx-background-image: url(event_card_front.png);");
 		}
 		else{
@@ -245,6 +240,7 @@ public class Card extends GridPane{
 		if(type.equals("event")){
 			cardNameLabel.setVisible(false);
 			eventResultLabel.setVisible(false);
+			eventResultText.setVisible(false);
 			setStyle("-fx-background-image: url(wide_cardbacks.png);"+"-fx-border-color: #ffffff;"+"-fx-border-width: 2;");
 		}
 		else{
