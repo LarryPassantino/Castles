@@ -53,7 +53,7 @@ public class CastlesMain extends Application {
             // Show the scene containing the root layout.
             Scene scene = new Scene(mainLayout);
             mainStage.setScene(scene);
-            mainStage.setResizable(false);
+            ////////////////////////////////////////////////////////////////mainStage.setResizable(false);
             mainStage.sizeToScene();
 
             // Give the controller access to the main app.
@@ -83,7 +83,7 @@ public class CastlesMain extends Application {
             // Show the scene containing the root layout.
             Scene scene = new Scene(titleLayout);
             titleStage.setScene(scene);
-            titleStage.setResizable(false);
+            ////////////////////////////////////////////////////////////////titleStage.setResizable(false);
             titleStage.sizeToScene();
 
             // Give the controller access to the main app.
@@ -116,7 +116,7 @@ public class CastlesMain extends Application {
         // Show the scene containing the root layout.
         Scene scene = new Scene(popupLayout);
         popupStage.setScene(scene);
-        popupStage.setResizable(false);
+        ////////////////////////////////////////////////////////////////popupStage.setResizable(false);
         popupStage.sizeToScene();
 
         // Give the controller access to the main app.
